@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+	
 	<ThingDef ParentName="MoteBase">
 		<defName>Mote_Rice</defName>
 		<graphicData>
@@ -12,4 +13,12 @@
 			<fadeOutTime>1.5</fadeOutTime>
 		</mote>
 	</ThingDef>
+
+	<ThingDef ParentName="MoodMoteBase">
+		<defName>Mote_Swear</defName>
+		<graphicData>
+			<color>(64,0,0)</color>
+		</graphicData>
+	</ThingDef>
+
 </Defs>

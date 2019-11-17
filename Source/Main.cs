@@ -61,6 +61,8 @@ namespace RiceRiceBaby
 	[HarmonyPatch(nameof(MoteMaker.ThrowMetaIcon))]
 	static class MoteMaker_ThrowMetaIcon_Patch
 	{
+		static Dictionary<Pawn, DateTime> lastBreath = new Dictionary<Pawn, DateTime>();
+
 		static bool Prefix(IntVec3 cell, Map map, ThingDef moteDef)
 		{
 			if (RiceRiceBabyMain.Settings.riceInsteadOfHeartWhileLovin && moteDef == ThingDefOf.Mote_Heart)
@@ -88,7 +90,7 @@ namespace RiceRiceBaby
 				var pawn = map.thingGrid.ThingAt<Pawn>(cell);
 				if (pawn.IsColonist && Rand.Chance(0.4f))
 				{
-					SoundDef def;
+					SoundDef def = null;
 					if (pawn.CanSnore() && Rand.Chance(0.5f))
 					{
 						def = Rand.Chance(0.5f) ? Defs.snoreMaleSound : Defs.snoreFemaleSound;
@@ -96,9 +98,16 @@ namespace RiceRiceBaby
 						if (pawn != null && pawn.gender == Gender.Female) def = Defs.snoreFemaleSound;
 					}
 					else
-						def = Defs.sleepingSound;
+					{
+						var now = DateTime.Now;
+						if (lastBreath.TryGetValue(pawn, out var date) == false || now > date.AddSeconds(4.3))
+						{
+							def = Defs.sleepingSound;
+							lastBreath[pawn] = now;
+						}
+					}
 
-					def.PlaySound(cell, map);
+					def?.PlaySound(cell, map);
 				}
 			}
 

@@ -49,7 +49,7 @@
 		<defName>Sleeping</defName>
 		<context>MapOnly</context>
 		<eventNames />
-		<maxSimultaneous>1</maxSimultaneous>
+		<maxSimultaneous>16</maxSimultaneous>
 		<subSounds>
 			<li>
 				<grains>
@@ -57,17 +57,13 @@
 						<clipPath>Sleeping</clipPath>
 					</li>
 				</grains>
-				<pitchRange>
-					<min>0.8</min>
-					<max>1.2</max>
-				</pitchRange>
 				<volumeRange>
 					<min>60</min>
 					<max>80</max>
 				</volumeRange>
 				<distRange>
 					<min>10</min>
-					<max>30</max>
+					<max>25</max>
 				</distRange>
 			</li>
 		</subSounds>

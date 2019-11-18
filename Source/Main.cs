@@ -61,28 +61,55 @@ namespace RiceRiceBaby
 	[HarmonyPatch(nameof(MoteMaker.ThrowMetaIcon))]
 	static class MoteMaker_ThrowMetaIcon_Patch
 	{
-		static Dictionary<Pawn, DateTime> lastBreath = new Dictionary<Pawn, DateTime>();
-
 		static bool Prefix(IntVec3 cell, Map map, ThingDef moteDef)
 		{
 			if (RiceRiceBabyMain.Settings.riceInsteadOfHeartWhileLovin && moteDef == ThingDefOf.Mote_Heart)
 			{
-				if (Rand.Chance(0.25f))
+				var pawn = map.thingGrid.ThingAt<Pawn>(cell);
+				if (pawn == null || pawn.IsColonist == false) return true;
+
+				var soundDef = Rand.Chance(0.5f) ? Defs.mmmSound : Defs.achSound;
+				if (pawn.gender == Gender.Male) soundDef = Defs.mmmSound;
+				if (pawn.gender == Gender.Female) soundDef = Defs.achSound;
+
+				if (pawn.CurJobDef == JobDefOf.Lovin)
 				{
-					if (Rand.Chance(0.5f))
+					if (Rand.Chance(0.25f))
 					{
-						var def = Rand.Chance(0.5f) ? Defs.mmmSound : Defs.achSound;
-						var pawn = map.thingGrid.ThingAt<Pawn>(cell);
-						if (pawn != null && pawn.gender == Gender.Male) def = Defs.mmmSound;
-						if (pawn != null && pawn.gender == Gender.Female) def = Defs.achSound;
-						def.PlaySound(cell, map);
+						if (Rand.Chance(0.5f))
+							soundDef.PlaySound(cell, map);
+
+						_ = MoteMaker.ThrowMetaIcon(cell, map, Defs.riceMote);
+						Defs.riceSound.PlaySound(cell, map);
+						return false;
 					}
-					_ = MoteMaker.ThrowMetaIcon(cell, map, Defs.riceMote);
-					Defs.riceSound.PlaySound(cell, map);
-					return false;
+					else
+						Defs.bedSound.PlaySound(cell, map);
 				}
-				else
-					Defs.bedSound.PlaySound(cell, map);
+				else // JobDefOf.Mate
+				{
+					if (pawn.gender == Gender.Male)
+					{
+						var stop = false;
+						Throttled.AfterIdle(10, pawn, ThrottleType.lastBreath, () =>
+						{
+							Defs.whisleSound.PlaySound(cell, map);
+							_ = MoteMaker.ThrowMetaIcon(cell, map, Defs.wantRiceMote);
+							stop = true;
+						});
+						if (stop)
+							return false;
+					}
+					else
+					{
+						if (Rand.Chance(0.1f))
+						{
+							Defs.achSound.PlaySound(cell, map);
+							_ = MoteMaker.ThrowMetaIcon(cell, map, Defs.wantRiceMote);
+							return false;
+						}
+					}
+				}
 			}
 
 			if (RiceRiceBabyMain.Settings.snoring && moteDef == ThingDefOf.Mote_SleepZ)
@@ -98,14 +125,7 @@ namespace RiceRiceBaby
 						if (pawn != null && pawn.gender == Gender.Female) def = Defs.snoreFemaleSound;
 					}
 					else
-					{
-						var now = DateTime.Now;
-						if (lastBreath.TryGetValue(pawn, out var date) == false || now > date.AddSeconds(4.3))
-						{
-							def = Defs.sleepingSound;
-							lastBreath[pawn] = now;
-						}
-					}
+						Throttled.Every(4.3, pawn, ThrottleType.lastBreath, () => def = Defs.sleepingSound);
 
 					def?.PlaySound(cell, map);
 				}

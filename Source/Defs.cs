@@ -10,6 +10,7 @@ namespace RiceRiceBaby
 	class Defs
 	{
 		public static ThingDef riceMote = ThingDef.Named("Mote_Rice");
+		public static ThingDef wantRiceMote = ThingDef.Named("Mote_WantRice");
 		public static ThingDef swearMote = ThingDef.Named("Mote_Swear");
 
 		public static Texture2D fuMote = ContentFinder<Texture2D>.Get("Mote-FU", true);
@@ -17,6 +18,7 @@ namespace RiceRiceBaby
 		public static Texture2D wtfMote = ContentFinder<Texture2D>.Get("Mote-WTF", true);
 
 		public static SoundDef whipSound = SoundDef.Named("WhipCrack");
+		public static SoundDef whisleSound = SoundDef.Named("Whisle");
 		public static SoundDef bedSound = SoundDef.Named("Bed");
 		public static SoundDef riceSound = SoundDef.Named("Rice");
 		public static SoundDef mmmSound = SoundDef.Named("Mmm");

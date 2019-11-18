@@ -18,6 +18,30 @@
 	</SoundDef>
 
 	<SoundDef>
+		<defName>Whisle</defName>
+		<context>MapOnly</context>
+		<eventNames />
+		<maxSimultaneous>1</maxSimultaneous>
+		<subSounds>
+			<li>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>Whisle</clipPath>
+					</li>
+				</grains>
+				<volumeRange>
+					<min>60</min>
+					<max>80</max>
+				</volumeRange>
+				<distRange>
+					<min>10</min>
+					<max>30</max>
+				</distRange>
+			</li>
+		</subSounds>
+	</SoundDef>
+
+	<SoundDef>
 		<defName>Rice</defName>
 		<context>MapOnly</context>
 		<eventNames />

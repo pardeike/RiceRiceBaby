@@ -8,7 +8,8 @@ namespace RiceRiceBaby
 	{
 		lastBreath,
 		whisle,
-		breakingBed
+		breakingBed,
+		wince
 	}
 
 	public static class Throttled
@@ -16,7 +17,7 @@ namespace RiceRiceBaby
 		static readonly Dictionary<Pawn, Dictionary<ThrottleType, DateTime>> timeState = new Dictionary<Pawn, Dictionary<ThrottleType, DateTime>>();
 		static readonly Dictionary<Pawn, Dictionary<ThrottleType, int>> countState = new Dictionary<Pawn, Dictionary<ThrottleType, int>>();
 
-		private static Dictionary<ThrottleType, DateTime> GetDateKeys(Pawn pawn, ThrottleType type)
+		static Dictionary<ThrottleType, DateTime> GetDateKeys(Pawn pawn, ThrottleType type)
 		{
 			if (timeState.TryGetValue(pawn, out var keys) == false)
 			{
@@ -28,7 +29,7 @@ namespace RiceRiceBaby
 			return keys;
 		}
 
-		private static Dictionary<ThrottleType, int> GetCountKeys(Pawn pawn, ThrottleType type)
+		static Dictionary<ThrottleType, int> GetCountKeys(Pawn pawn, ThrottleType type)
 		{
 			if (countState.TryGetValue(pawn, out var keys) == false)
 			{

@@ -1,5 +1,4 @@
-﻿using Harmony;
-using RimWorld;
+﻿using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -7,39 +6,6 @@ using Verse.Sound;
 
 namespace RiceRiceBaby
 {
-	class DefTools
-	{
-		public static void ManipulateDefs()
-		{
-			void MakeEasy(ThoughtDef def)
-			{
-				def.durationDays = 1;
-				def.stackLimit = 2;
-				def.stackLimitForSameOtherPawn = 2;
-				def.stages[0].baseOpinionOffset = -1;
-				def.stages[0].baseMoodEffect = -1;
-			}
-
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("SoldMyLovedOne"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("RebuffedMyRomanceAttempt"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("RebuffedMyRomanceAttemptMood"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("FailedRomanceAttemptOnMe"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("FailedRomanceAttemptOnMeLowOpinionMood"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("BrokeUpWithMe"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("BrokeUpWithMeMood"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("CheatedOnMe"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("CheatedOnMeMood"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("DivorcedMe"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("DivorcedMeMood"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("RejectedMyProposal"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("RejectedMyProposalMood"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("IRejectedTheirProposal"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("KilledMyLover"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("KilledMyFiance"));
-			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("KilledMySpouse"));
-		}
-	}
-
 	[StaticConstructorOnStartup]
 	class Defs
 	{

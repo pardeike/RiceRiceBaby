@@ -6,10 +6,10 @@ namespace RiceRiceBaby
 	public class RiceRiceBabySettings : ModSettings
 	{
 		public bool whipAchtungForce = true;
-		public bool riceInsteadOfHeartWhileLovin = true;
-		public bool snoring = true;
-		public bool swearing = true;
+		public bool lovin = true;
 		public bool profanity = true;
+		public bool swearing = true;
+		public bool death = true;
 		public bool romancing = true;
 		public float romanceLevel = 0.4f;
 
@@ -17,10 +17,10 @@ namespace RiceRiceBaby
 		{
 			base.ExposeData();
 			Scribe_Values.Look(ref whipAchtungForce, "whipAchtungForce", true);
-			Scribe_Values.Look(ref riceInsteadOfHeartWhileLovin, "riceInsteadOfHeartWhileLovin", true);
-			Scribe_Values.Look(ref snoring, "snoring", true);
-			Scribe_Values.Look(ref swearing, "swearing", true);
+			Scribe_Values.Look(ref lovin, "lovin", true);
 			Scribe_Values.Look(ref profanity, "profanity", true);
+			Scribe_Values.Look(ref swearing, "swearing", true);
+			Scribe_Values.Look(ref death, "death", true);
 			Scribe_Values.Look(ref romancing, "romancing", true);
 			Scribe_Values.Look(ref romanceLevel, "romanceLevel", 0.4f);
 
@@ -37,13 +37,13 @@ namespace RiceRiceBaby
 			list.Gap(16f);
 
 			list.CheckboxLabeled("Whip Force", ref whipAchtungForce);
-			list.CheckboxLabeled("Rice instead of hearts", ref riceInsteadOfHeartWhileLovin);
-			list.CheckboxLabeled("Snoring", ref snoring);
-			list.CheckboxLabeled("Swearing", ref swearing);
+			list.CheckboxLabeled("Lovin'", ref lovin);
 			list.CheckboxLabeled("Profanity", ref profanity);
+			list.CheckboxLabeled("Swearing", ref swearing);
+			list.CheckboxLabeled("Death", ref death);
 
 			var str = romancing ? (int)(romanceLevel * 100) + "%" : "-";
-			list.CheckboxLabeled("Romance level: " + str, ref romancing);
+			list.CheckboxLabeled("Romance: " + str, ref romancing);
 			romanceLevel = list.Slider(romanceLevel, 0f, 1f);
 
 			list.End();

@@ -433,4 +433,32 @@
 		</subSounds>
 	</SoundDef>
 
+	<SoundDef>
+		<defName>RiceEcho</defName>
+		<context>MapOnly</context>
+		<eventNames />
+		<maxSimultaneous>1</maxSimultaneous>
+		<subSounds>
+			<li>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>RiceEcho</clipPath>
+					</li>
+				</grains>
+				<pitchRange>
+					<min>1.0</min>
+					<max>1.0</max>
+				</pitchRange>
+				<volumeRange>
+					<min>70</min>
+					<max>90</max>
+				</volumeRange>
+				<distRange>
+					<min>10</min>
+					<max>50</max>
+				</distRange>
+			</li>
+		</subSounds>
+	</SoundDef>
+
 </Defs>

@@ -347,9 +347,24 @@ namespace RiceRiceBaby
 		}
 	}
 
+	// profanity
+
+	[HarmonyPatch(typeof(PawnRenderer))]
+	[HarmonyPatch(nameof(PawnRenderer.RendererTick))]
+	static class PawnRenderer_RendererTick_Patch
+	{
+		static void Postfix(Pawn ___pawn)
+		{
+			if (___pawn.Downed == false || ___pawn.IsColonist == false)
+				return;
+
+
+		}
+	}
+
 	// fu & wtf's
 	//
-	[HarmonyPatch(typeof(MemoryThoughtHandler))]
+		[HarmonyPatch(typeof(MemoryThoughtHandler))]
 	[HarmonyPatch(nameof(MemoryThoughtHandler.TryGainMemory))]
 	[HarmonyPatch(new Type[] { typeof(Thought_Memory), typeof(Pawn) })]
 	static class MemoryThoughtHandler_TryGainMemory_Patch
@@ -410,6 +425,30 @@ namespace RiceRiceBaby
 			{
 				Lovin.Done(___pawn);
 				Throttled.ResetEvery(___pawn, ThrottleType.breakingBed);
+			}
+
+			// https://github.com/fluffy-mods/BirdsAndBees/blob/master/Defs/ThoughtDefs/Thoughts_Memory_Social.xml
+			if (newThought.def.defName == "LovinPerformance")
+			{
+				if (newThought.CurStageIndex == 0) // terribly lovin
+				{
+					Defs.mehSound.PlaySound(___pawn);
+					___pawn.interactions.StartSocialFight(newThought.otherPawn);
+				}
+
+				if (newThought.CurStageIndex == 3) // amazing lovin
+				{
+					var bed = ___pawn.CurrentBed();
+					if (bed != null && bed.GetCurOccupantSlotIndex(___pawn) == 0)
+					{
+						var mote = (Mote)ThingMaker.MakeThing(Defs.amazingMote, null);
+						_ = GenSpawn.Spawn(mote, ___pawn.Position, ___pawn.Map, WipeMode.Vanish);
+						mote.exactPosition = bed.TrueCenter();
+
+						Defs.riceEchoSound.PlaySound(___pawn);
+						Find.CameraDriver.shaker.DoShake(4f);
+					}
+				}
 			}
 		}
 	}

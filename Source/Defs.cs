@@ -46,6 +46,7 @@ namespace RiceRiceBaby
 		public static ThingDef riceMote = ThingDef.Named("Mote_Rice");
 		public static ThingDef wantRiceMote = ThingDef.Named("Mote_WantRice");
 		public static ThingDef swearMote = ThingDef.Named("Mote_Swear");
+		public static ThingDef amazingMote = ThingDef.Named("Mote_Amazing");
 
 		public static Texture2D fuMote = ContentFinder<Texture2D>.Get("Mote-FU", true);
 		public static Texture2D fthisMote = ContentFinder<Texture2D>.Get("Mote-F-this", true);
@@ -67,6 +68,7 @@ namespace RiceRiceBaby
 		public static SoundDef fartSound = SoundDef.Named("Fart");
 		public static SoundDef sighSound = SoundDef.Named("Sigh");
 		public static SoundDef mehSound = SoundDef.Named("Meh");
+		public static SoundDef riceEchoSound = SoundDef.Named("RiceEcho");
 
 		public static readonly TraitDef[] snoringTraits = new TraitDef[]
 		{

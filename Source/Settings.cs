@@ -9,6 +9,9 @@ namespace RiceRiceBaby
 		public bool riceInsteadOfHeartWhileLovin = true;
 		public bool snoring = true;
 		public bool swearing = true;
+		public bool profanity = true;
+		public bool romancing = true;
+		public float romanceLevel = 0.4f;
 
 		public override void ExposeData()
 		{
@@ -17,6 +20,9 @@ namespace RiceRiceBaby
 			Scribe_Values.Look(ref riceInsteadOfHeartWhileLovin, "riceInsteadOfHeartWhileLovin", true);
 			Scribe_Values.Look(ref snoring, "snoring", true);
 			Scribe_Values.Look(ref swearing, "swearing", true);
+			Scribe_Values.Look(ref profanity, "profanity", true);
+			Scribe_Values.Look(ref romancing, "romancing", true);
+			Scribe_Values.Look(ref romanceLevel, "romanceLevel", 0.4f);
 
 			if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs)
 			{
@@ -34,6 +40,11 @@ namespace RiceRiceBaby
 			list.CheckboxLabeled("Rice instead of hearts", ref riceInsteadOfHeartWhileLovin);
 			list.CheckboxLabeled("Snoring", ref snoring);
 			list.CheckboxLabeled("Swearing", ref swearing);
+			list.CheckboxLabeled("Profanity", ref profanity);
+
+			var str = romancing ? (int)(romanceLevel * 100) + "%" : "-";
+			list.CheckboxLabeled("Romance level: " + str, ref romancing);
+			romanceLevel = list.Slider(romanceLevel, 0f, 1f);
 
 			list.End();
 		}

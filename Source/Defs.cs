@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using Harmony;
+using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -6,6 +7,39 @@ using Verse.Sound;
 
 namespace RiceRiceBaby
 {
+	class DefTools
+	{
+		public static void ManipulateDefs()
+		{
+			void MakeEasy(ThoughtDef def)
+			{
+				def.durationDays = 1;
+				def.stackLimit = 2;
+				def.stackLimitForSameOtherPawn = 2;
+				def.stages[0].baseOpinionOffset = -1;
+				def.stages[0].baseMoodEffect = -1;
+			}
+
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("SoldMyLovedOne"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("RebuffedMyRomanceAttempt"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("RebuffedMyRomanceAttemptMood"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("FailedRomanceAttemptOnMe"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("FailedRomanceAttemptOnMeLowOpinionMood"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("BrokeUpWithMe"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("BrokeUpWithMeMood"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("CheatedOnMe"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("CheatedOnMeMood"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("DivorcedMe"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("DivorcedMeMood"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("RejectedMyProposal"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("RejectedMyProposalMood"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("IRejectedTheirProposal"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("KilledMyLover"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("KilledMyFiance"));
+			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("KilledMySpouse"));
+		}
+	}
+
 	[StaticConstructorOnStartup]
 	class Defs
 	{
@@ -19,14 +53,20 @@ namespace RiceRiceBaby
 
 		public static SoundDef whipSound = SoundDef.Named("WhipCrack");
 		public static SoundDef whisleSound = SoundDef.Named("Whisle");
-		public static SoundDef bedSound = SoundDef.Named("Bed");
 		public static SoundDef riceSound = SoundDef.Named("Rice");
+		public static SoundDef sleepingSound = SoundDef.Named("Sleeping");
 		public static SoundDef mmmSound = SoundDef.Named("Mmm");
 		public static SoundDef achSound = SoundDef.Named("Ach");
-		public static SoundDef sleepingSound = SoundDef.Named("Sleeping");
 		public static SoundDef snoreMaleSound = SoundDef.Named("SnoreMale");
 		public static SoundDef snoreFemaleSound = SoundDef.Named("SnoreFemale");
+		public static SoundDef bedSound = SoundDef.Named("Bed");
+		public static SoundDef damageSound = SoundDef.Named("Damage");
+		public static SoundDef breakSound = SoundDef.Named("Break");
+		public static SoundDef dyingSound = SoundDef.Named("Dying");
+		public static SoundDef belchSound = SoundDef.Named("Belch");
+		public static SoundDef fartSound = SoundDef.Named("Fart");
 		public static SoundDef sighSound = SoundDef.Named("Sigh");
+		public static SoundDef mehSound = SoundDef.Named("Meh");
 
 		public static readonly TraitDef[] snoringTraits = new TraitDef[]
 		{

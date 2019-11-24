@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Defs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Lovin.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />

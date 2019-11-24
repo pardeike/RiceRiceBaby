@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Verse;
 
 namespace RiceRiceBaby
@@ -9,28 +7,42 @@ namespace RiceRiceBaby
 	public enum ThrottleType
 	{
 		lastBreath,
-		whisle
+		whisle,
+		breakingBed
 	}
 
 	public static class Throttled
 	{
-		static readonly Dictionary<Pawn, Dictionary<ThrottleType, DateTime>> state = new Dictionary<Pawn, Dictionary<ThrottleType, DateTime>>();
+		static readonly Dictionary<Pawn, Dictionary<ThrottleType, DateTime>> timeState = new Dictionary<Pawn, Dictionary<ThrottleType, DateTime>>();
+		static readonly Dictionary<Pawn, Dictionary<ThrottleType, int>> countState = new Dictionary<Pawn, Dictionary<ThrottleType, int>>();
 
-		private static Dictionary<ThrottleType, DateTime> GetKeys(Pawn pawn, ThrottleType type)
+		private static Dictionary<ThrottleType, DateTime> GetDateKeys(Pawn pawn, ThrottleType type)
 		{
-			if (state.TryGetValue(pawn, out var keys) == false)
+			if (timeState.TryGetValue(pawn, out var keys) == false)
 			{
 				keys = new Dictionary<ThrottleType, DateTime>();
-				state[pawn] = keys;
+				timeState[pawn] = keys;
 			}
 			if (keys.ContainsKey(type) == false)
 				keys[type] = DateTime.MinValue;
 			return keys;
 		}
 
+		private static Dictionary<ThrottleType, int> GetCountKeys(Pawn pawn, ThrottleType type)
+		{
+			if (countState.TryGetValue(pawn, out var keys) == false)
+			{
+				keys = new Dictionary<ThrottleType, int>();
+				countState[pawn] = keys;
+			}
+			if (keys.ContainsKey(type) == false)
+				keys[type] = 0;
+			return keys;
+		}
+
 		public static void Every(double seconds, Pawn pawn, ThrottleType type, Action action)
 		{
-			var keys = GetKeys(pawn, type);
+			var keys = GetDateKeys(pawn, type);
 			var now = DateTime.Now;
 			if (keys[type].AddSeconds(seconds) < now)
 			{
@@ -41,11 +53,34 @@ namespace RiceRiceBaby
 
 		public static void AfterIdle(double seconds, Pawn pawn, ThrottleType type, Action action)
 		{
-			var keys = GetKeys(pawn, type);
+			var keys = GetDateKeys(pawn, type);
 			var now = DateTime.Now;
 			if (keys[type].AddSeconds(seconds) < now)
 				action();
 			keys[type] = now;
+		}
+
+		public static void Every(int count, Pawn pawn, ThrottleType type, Action action)
+		{
+			var keys = GetCountKeys(pawn, type);
+			keys[type] += 1;
+			if (keys[type] >= count)
+			{
+				action();
+				keys[type] = 0;
+			}
+		}
+
+		public static int CurrentEvery(Pawn pawn, ThrottleType type)
+		{
+			var keys = GetCountKeys(pawn, type);
+			return keys[type];
+		}
+
+		public static void ResetEvery(Pawn pawn, ThrottleType type)
+		{
+			var keys = GetCountKeys(pawn, type);
+			keys[type] = 0;
 		}
 	}
 }

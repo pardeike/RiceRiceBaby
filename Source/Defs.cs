@@ -13,6 +13,7 @@ namespace RiceRiceBaby
 		public static ThingDef wantRiceMote = ThingDef.Named("Mote_WantRice");
 		public static ThingDef swearMote = ThingDef.Named("Mote_Swear");
 		public static ThingDef amazingMote = ThingDef.Named("Mote_Amazing");
+		public static ThingDef gasMote = ThingDef.Named("Mote_Gas");
 
 		public static Texture2D fuMote = ContentFinder<Texture2D>.Get("Mote-FU", true);
 		public static Texture2D fthisMote = ContentFinder<Texture2D>.Get("Mote-F-this", true);

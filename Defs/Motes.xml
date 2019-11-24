@@ -51,4 +51,18 @@
 		</graphicData>
 	</ThingDef>
 
+	<ThingDef ParentName="MoteBase">
+		<defName>Mote_Gas</defName>
+		<graphicData>
+			<texPath>Gas</texPath>
+		</graphicData>
+		<altitudeLayer>MoteOverhead</altitudeLayer>
+		<mote>
+			<fadeInTime>0.50</fadeInTime>
+			<solidTime>6</solidTime>
+			<fadeOutTime>3.2</fadeOutTime>
+			<growthRate>0.005</growthRate>
+		</mote>
+	</ThingDef>
+
 </Defs>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 
 namespace RiceRiceBaby
@@ -43,6 +44,12 @@ namespace RiceRiceBaby
 
 		public readonly bool onTop;
 		public readonly Rot4[] face = new[] { Rot4.South, Rot4.South };
+
+		// transient
+		public Vector3 longSide;
+		public Vector3 shortSide;
+		public float longHump;
+		public float sway;
 
 		public static Lovin LovinFor(Pawn p1, Pawn p2)
 		{

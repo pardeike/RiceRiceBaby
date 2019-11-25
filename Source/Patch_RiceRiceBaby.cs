@@ -2,10 +2,10 @@
 using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
-using Verse.AI;
 
 namespace RiceRiceBaby
 {
@@ -107,64 +107,84 @@ namespace RiceRiceBaby
 		}
 	}
 
-	[HarmonyPatch(typeof(PawnRenderer))]
-	[HarmonyPatch("RenderPawnInternal")]
-	[HarmonyPatch(new[] { typeof(Vector3), typeof(float), typeof(bool), typeof(Rot4), typeof(Rot4), typeof(RotDrawMode), typeof(bool), typeof(bool) })]
-	static class PawnRenderer_RenderPawnInternal_Patch
+	static class RenderPawnInternalPatch
 	{
 		static readonly AccessTools.FieldRef<JobDriver_Lovin, int> ticksLeftRef = AccessTools.FieldRefAccess<JobDriver_Lovin, int>("ticksLeft");
-		static readonly AccessTools.FieldRef<JobDriver_Lovin, TargetIndex> PartnerIndRef = AccessTools.FieldRefAccess<JobDriver_Lovin, TargetIndex>("PartnerInd");
 
-		static void LovinFix(Pawn pawn, ref Vector3 rootLoc, ref float angle, ref Rot4 headFacing)
+		public static Lovin GetLovin(Pawn pawn)
 		{
-			if (RiceRiceBabyMain.Settings.lovin == false) return;
-			if (pawn.CurJobDef != JobDefOf.Lovin) return;
+			if (RiceRiceBabyMain.Settings.lovin == false) return null;
+			if (pawn.CurJobDef != JobDefOf.Lovin) return null;
 
 			var bed = pawn.CurrentBed();
-			if (bed == null) return;
+			if (bed == null) return null;
 
 			var idx = bed.GetCurOccupantSlotIndex(pawn);
-			if (idx < 0 || idx > 1) return;
+			if (idx < 0 || idx > 1) return null;
 
 			var partner = bed.GetCurOccupant(1 - idx);
 
 			var driver1 = pawn.jobs.curDriver as JobDriver_Lovin;
 			var driver2 = partner.jobs.curDriver as JobDriver_Lovin;
-			if (driver1 == null || driver2 == null) return;
+			if (driver1 == null || driver2 == null) return null;
 			var ticksLeft = Math.Min(ticksLeftRef(driver1), ticksLeftRef(driver2));
 
+			var lovin = Lovin.LovinFor(pawn, partner);
+
 			var baseRotation = bed.Rotation;
-			var longSide = baseRotation.FacingCell.ToVector3();
+			lovin.longSide = baseRotation.FacingCell.ToVector3();
 			var orthogonalRotation = baseRotation.Rotated(RotationDirection.Clockwise);
-			var shortSide = orthogonalRotation.FacingCell.ToVector3();
+			lovin.shortSide = orthogonalRotation.FacingCell.ToVector3();
 
 			var ticks = GenTicks.TicksGame / 600f;
 			const float maxTicksLeft = 2500f;
 			var speed = GenMath.LerpDoubleClamped(0f, maxTicksLeft + 64f, 4f, 0f, ticksLeft + (pawn.GetHashCode() % 600));
 
 			var hump = (float)Math.Sin(ticks * speed);
-			var sway = (float)Math.Sin(ticks * 400f) / 100f;
-			var longHump = (pawn.gender == Gender.Male ? 1 / 25f : 1 / 45f) * hump;
+			lovin.sway = (float)Math.Sin(ticks * 400f) / 100f;
+			lovin.longHump = (pawn.gender == Gender.Male ? 1 / 25f : 1 / 45f) * hump;
 
-			var lovin = Lovin.LovinFor(pawn, partner);
+			return lovin;
+		}
+	}
+
+	[HarmonyPatch(typeof(PawnRenderer))]
+	[HarmonyPatch("RenderPawnInternal")]
+	[HarmonyPatch(new[] { typeof(Vector3), typeof(float), typeof(bool), typeof(Rot4), typeof(Rot4), typeof(RotDrawMode), typeof(bool), typeof(bool) })]
+	static class PawnRenderer_RenderPawnInternal_Patch
+	{
+		public static bool setRootLoc = true;
+
+		public static void LovinFix(Pawn pawn, ref Vector3 rootLoc, ref float angle, ref Rot4 headFacing)
+		{
+			var lovin = RenderPawnInternalPatch.GetLovin(pawn);
+			if (lovin == null) return;
+
+			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
+			var ticks = GenTicks.TicksGame / 600f;
+
 			headFacing = lovin.face[idx];
 			if (lovin.onTop)
 			{
 				var shortHump = idx == 0 ? -0.45f : 0.45f;
-				rootLoc += longSide * longHump + shortSide * shortHump;
-				if (idx == 0)
-					rootLoc += new Vector3(0f, 0.01f, 0f);
+				if (setRootLoc)
+				{
+					rootLoc += lovin.longSide * lovin.longHump + lovin.shortSide * shortHump;
+					if (idx == 0)
+						rootLoc += new Vector3(0f, 0.01f, 0f);
+				}
 				angle += (float)Math.Sin(ticks * 10f) * 2f;
 			}
 			else
 			{
-				var shortHump = idx == 0 ? -0.2f - sway : 0.2f + sway;
-				rootLoc += longSide * longHump + shortSide * shortHump;
+				var shortHump = idx == 0 ? -0.2f - lovin.sway : 0.2f + lovin.sway;
+				if (setRootLoc)
+					rootLoc += lovin.longSide * lovin.longHump + lovin.shortSide * shortHump;
 				angle += (float)Math.Sin(ticks * 50f) * 2f;
 			}
 		}
 
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			var dummy1 = Vector3.zero; var dummy2 = 0f; var dummy3 = Rot4.Invalid;
 			yield return new CodeInstruction(OpCodes.Ldarg_0);
@@ -175,6 +195,67 @@ namespace RiceRiceBaby
 			yield return new CodeInstruction(OpCodes.Call, SymbolExtensions.GetMethodInfo(() => LovinFix(null, ref dummy1, ref dummy2, ref dummy3)));
 			foreach (var instruction in instructions)
 				yield return instruction;
+		}
+	}
+
+	[HarmonyPatch]
+	static class FacialStuff_HarmonyPatch_PawnRenderer_Prefix_Patch
+	{
+		static bool Prepare()
+		{
+			return TargetMethod() != null;
+		}
+
+		static MethodBase TargetMethod()
+		{
+			return AccessTools.Method("FacialStuff.Harmony.HarmonyPatch_PawnRenderer:Prefix");
+		}
+
+		static void Prefix([HarmonyArgument(0)] PawnRenderer renderer, ref Rot4 headFacing)
+		{
+			var pawn = renderer.graphics.pawn;
+			var lovin = RenderPawnInternalPatch.GetLovin(pawn);
+			if (lovin == null) return;
+			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
+			headFacing = lovin.face[idx];
+		}
+	}
+
+	[HarmonyPatch]
+	static class FacialStuff_RecalcRootLocY_Patch
+	{
+		static bool Prepare()
+		{
+			return TargetMethod() != null;
+		}
+
+		static MethodBase TargetMethod()
+		{
+			var method = AccessTools.Method("FacialStuff.Harmony.HarmonyPatch_PawnRenderer:RecalcRootLocY");
+			PawnRenderer_RenderPawnInternal_Patch.setRootLoc = method == null;
+			return method;
+		}
+
+		static void Postfix(ref Vector3 rootLoc, Pawn pawn)
+		{
+			var lovin = RenderPawnInternalPatch.GetLovin(pawn);
+			if (lovin == null) return;
+
+			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
+			var ticks = GenTicks.TicksGame / 600f;
+
+			if (lovin.onTop)
+			{
+				var shortHump = idx == 0 ? -0.45f : 0.45f;
+				rootLoc += lovin.longSide * lovin.longHump + lovin.shortSide * shortHump;
+				if (idx == 0)
+					rootLoc += new Vector3(0f, 0.01f, 0f);
+			}
+			else
+			{
+				var shortHump = idx == 0 ? -0.2f - lovin.sway : 0.2f + lovin.sway;
+				rootLoc += lovin.longSide * lovin.longHump + lovin.shortSide * shortHump;
+			}
 		}
 	}
 

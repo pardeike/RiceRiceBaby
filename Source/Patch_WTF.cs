@@ -68,7 +68,7 @@ namespace RiceRiceBaby
 
 	[HarmonyPatch(typeof(Pawn_InteractionsTracker))]
 	[HarmonyPatch(nameof(Pawn_InteractionsTracker.TryInteractWith))]
-	static class MoteMaker_MakeInteractionBubble_Patch1
+	static class Pawn_InteractionsTracker_TryInteractWith_Patch1
 	{
 		static void Postfix(InteractionDef intDef, Pawn ___pawn, bool __result)
 		{

@@ -12,6 +12,8 @@ namespace RiceRiceBaby
 		public bool death = true;
 		public bool romancing = true;
 		public float romanceLevel = 0.4f;
+		public float cheatingLevel = 0.2f;
+		public float riceLevel = 0.4f;
 
 		public override void ExposeData()
 		{
@@ -23,6 +25,8 @@ namespace RiceRiceBaby
 			Scribe_Values.Look(ref death, "death", true);
 			Scribe_Values.Look(ref romancing, "romancing", true);
 			Scribe_Values.Look(ref romanceLevel, "romanceLevel", 0.4f);
+			Scribe_Values.Look(ref cheatingLevel, "cheatingLevel", 0.2f);
+			Scribe_Values.Look(ref riceLevel, "riceLevel", 0.4f);
 
 			if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs)
 			{
@@ -44,7 +48,16 @@ namespace RiceRiceBaby
 
 			var str = romancing ? (int)(romanceLevel * 100) + "%" : "-";
 			list.CheckboxLabeled("Romance: " + str, ref romancing);
-			romanceLevel = list.Slider(romanceLevel, 0f, 1f);
+			if (romancing)
+			{
+				romanceLevel = list.Slider(romanceLevel, 0f, 1f);
+
+				list.Label("Cheating: " + (int)(cheatingLevel * 100) + "%");
+				cheatingLevel = list.Slider(cheatingLevel, 0f, 1f);
+
+				list.Label("Rice: " + (int)(riceLevel * 100) + "%");
+				riceLevel = list.Slider(riceLevel, 0f, 1f);
+			}
 
 			list.End();
 		}

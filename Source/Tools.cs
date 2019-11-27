@@ -1,9 +1,10 @@
 ﻿using RimWorld;
+using System;
 using Verse;
 
 namespace RiceRiceBaby
 {
-	class Tools
+	static class Tools
 	{
 		public static void ManipulateDefs()
 		{
@@ -33,6 +34,15 @@ namespace RiceRiceBaby
 			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("KilledMyLover"));
 			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("KilledMyFiance"));
 			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("KilledMySpouse"));
+		}
+
+		public static bool CapableColonist(this Pawn pawn)
+		{
+			return pawn != null
+					&& pawn.Spawned
+					&& pawn.Faction != null
+					&& pawn.Faction.IsPlayer
+					&& pawn.RaceProps.Humanlike;
 		}
 	}
 }

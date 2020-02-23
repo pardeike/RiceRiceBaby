@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
 using Verse;
@@ -15,7 +15,7 @@ namespace RiceRiceBaby
 			rootDir = content.RootDir.Replace("\\", "/");
 			Settings = GetSettings<RiceRiceBabySettings>();
 
-			var harmony = HarmonyInstance.Create("net.pardeike.rimworld.mod.ricericebaby");
+			var harmony = new Harmony("net.pardeike.rimworld.mod.ricericebaby");
 			harmony.PatchAll(Assembly.GetExecutingAssembly());
 		}
 

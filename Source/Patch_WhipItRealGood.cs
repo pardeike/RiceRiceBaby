@@ -1,6 +1,5 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using System.Reflection;
-using UnityEngine;
 using Verse;
 
 namespace RiceRiceBaby
@@ -22,12 +21,14 @@ namespace RiceRiceBaby
 		{
 			if (RiceRiceBabyMain.Settings.whipAchtungForce)
 			{
-				var w = 320f;
+				// TODO: need to use VideoPlayer in Unity 2019
+				//
+				/*var w = 320f;
 				var h = 234f;
 				var dx = (Screen.width - w) / 2f;
 				var dy = (Screen.height - h) / 2f;
 				var rect = new Rect(dx, dy, w, h);
-				_ = pawn.Map.GetComponent<MoviePlayer>().Play("Whip", rect, false);
+				_ = pawn.Map.GetComponent<MoviePlayer>().Play("Whip", rect, false);*/
 
 				Defs.whipSound.PlaySound(pawn);
 			}

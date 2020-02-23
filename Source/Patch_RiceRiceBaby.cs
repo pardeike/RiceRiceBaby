@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -107,7 +107,7 @@ namespace RiceRiceBaby
 		}
 	}
 
-	static class RenderPawnInternalPatch
+	static class LoveAnimation
 	{
 		static readonly AccessTools.FieldRef<JobDriver_Lovin, int> ticksLeftRef = AccessTools.FieldRefAccess<JobDriver_Lovin, int>("ticksLeft");
 
@@ -136,12 +136,14 @@ namespace RiceRiceBaby
 			var orthogonalRotation = baseRotation.Rotated(RotationDirection.Clockwise);
 			lovin.shortSide = orthogonalRotation.FacingCell.ToVector3();
 
-			var ticks = GenTicks.TicksGame / 600f;
-			const float maxTicksLeft = 2500f;
-			var speed = GenMath.LerpDoubleClamped(0f, maxTicksLeft + 64f, 4f, 0f, ticksLeft + (pawn.GetHashCode() % 600));
+			var ticks = Tools.Ticker() / 1000f;
+			var offset = pawn.GetHashCode() % 1000 - 500;
 
-			var hump = (float)Math.Sin(ticks * speed);
-			lovin.sway = (float)Math.Sin(ticks * 400f) / 100f;
+			const float maxTicksLeft = 2500f;
+			var speed = GenMath.LerpDoubleClamped(0f, maxTicksLeft + 500, 3f, 0f, ticksLeft + offset);
+
+			var hump = Mathf.Sin(ticks * speed);
+			lovin.sway = (float)Math.Sin(ticks * (speed + offset / 10f)) / 50f;
 			lovin.longHump = (pawn.gender == Gender.Male ? 1 / 25f : 1 / 45f) * hump;
 
 			return lovin;
@@ -150,18 +152,18 @@ namespace RiceRiceBaby
 
 	[HarmonyPatch(typeof(PawnRenderer))]
 	[HarmonyPatch("RenderPawnInternal")]
-	[HarmonyPatch(new[] { typeof(Vector3), typeof(float), typeof(bool), typeof(Rot4), typeof(Rot4), typeof(RotDrawMode), typeof(bool), typeof(bool) })]
+	[HarmonyPatch(new[] { typeof(Vector3), typeof(float), typeof(bool), typeof(Rot4), typeof(Rot4), typeof(RotDrawMode), typeof(bool), typeof(bool), typeof(bool) })]
 	static class PawnRenderer_RenderPawnInternal_Patch
 	{
 		public static bool setRootLoc = true;
 
 		public static void LovinFix(Pawn pawn, ref Vector3 rootLoc, ref float angle, ref Rot4 headFacing)
 		{
-			var lovin = RenderPawnInternalPatch.GetLovin(pawn);
+			var lovin = LoveAnimation.GetLovin(pawn);
 			if (lovin == null) return;
 
 			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
-			var ticks = GenTicks.TicksGame / 600f;
+			var ticks = Tools.Ticker() / 1000f;
 
 			headFacing = lovin.face[idx];
 			if (lovin.onTop)
@@ -173,7 +175,7 @@ namespace RiceRiceBaby
 					if (idx == 0)
 						rootLoc += new Vector3(0f, 0.01f, 0f);
 				}
-				angle += (float)Math.Sin(ticks * 10f) * 2f;
+				angle += (float)Math.Sin(ticks * 10f) * 3f;
 			}
 			else
 			{
@@ -214,7 +216,7 @@ namespace RiceRiceBaby
 		static void Prefix([HarmonyArgument(0)] PawnRenderer renderer, ref Rot4 headFacing)
 		{
 			var pawn = renderer.graphics.pawn;
-			var lovin = RenderPawnInternalPatch.GetLovin(pawn);
+			var lovin = LoveAnimation.GetLovin(pawn);
 			if (lovin == null) return;
 			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
 			headFacing = lovin.face[idx];
@@ -238,11 +240,11 @@ namespace RiceRiceBaby
 
 		static void Postfix(ref Vector3 rootLoc, Pawn pawn)
 		{
-			var lovin = RenderPawnInternalPatch.GetLovin(pawn);
+			var lovin = LoveAnimation.GetLovin(pawn);
 			if (lovin == null) return;
 
 			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
-			var ticks = GenTicks.TicksGame / 600f;
+			// var ticks = Tools.Ticker() / 1000f;
 
 			if (lovin.onTop)
 			{
@@ -300,7 +302,7 @@ namespace RiceRiceBaby
 
 	[HarmonyPatch(typeof(Pawn_InteractionsTracker))]
 	[HarmonyPatch(nameof(Pawn_InteractionsTracker.TryInteractWith))]
-	static class MoteMaker_MakeInteractionBubble_Patch2
+	static class Pawn_InteractionsTracker_TryInteractWith_Patch
 	{
 		static void Postfix(InteractionDef intDef, Pawn ___pawn, bool __result)
 		{

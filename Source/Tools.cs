@@ -36,13 +36,26 @@ namespace RiceRiceBaby
 			MakeEasy(DefDatabase<ThoughtDef>.GetNamed("KilledMySpouse"));
 		}
 
-		public static bool CapableColonist(this Pawn pawn)
+		static long freezeTicks = 0;
+		static long subTicks = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+		public static long Ticker()
 		{
-			return pawn != null
-					&& pawn.Spawned
-					&& pawn.Faction != null
-					&& pawn.Faction.IsPlayer
-					&& pawn.RaceProps.Humanlike;
+			var nowTicks = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+			var paused = Find.TickManager.Paused;
+
+			if (freezeTicks == 0 && paused)
+				freezeTicks = nowTicks;
+
+			if (freezeTicks > 0 && paused == false)
+			{
+				subTicks = nowTicks - freezeTicks;
+				freezeTicks = 0;
+			}
+
+			if (paused)
+				return freezeTicks;
+			return nowTicks - subTicks;
 		}
 	}
 }

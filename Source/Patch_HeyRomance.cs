@@ -1,8 +1,8 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using Verse;
 
@@ -10,7 +10,7 @@ namespace RiceRiceBaby
 {
 	[HarmonyPatch(typeof(Root_Play))]
 	[HarmonyPatch(nameof(Root_Play.Start))]
-	static class Game_LoadGame_Patch
+	static class Root_Play_Start_Patch
 	{
 		static void Prefix()
 		{
@@ -57,38 +57,76 @@ namespace RiceRiceBaby
 
 	[HarmonyPatch(typeof(Pawn_InteractionsTracker))]
 	[HarmonyPatch("TryInteractRandomly")]
-	static class GenCollection_TryRandomElementByWeight_Patch
+	static class GenCollection_TryInteractRandomly_Patch
 	{
-		static bool TryRandomElementByWeight(IEnumerable<InteractionDef> source, Func<InteractionDef, float> weightSelector, out InteractionDef result, Pawn initiator, Pawn recipient)
+#pragma warning disable IDE0052
+		static InteractionDef dummy = null;
+#pragma warning restore IDE0052
+
+		static readonly MethodInfo m_SelectRomanceAttempt = SymbolExtensions.GetMethodInfo(() => SelectRomanceAttempt(default, null, null, out dummy));
+		static readonly List<Pawn> workingList = Traverse.Create<Pawn_InteractionsTracker>().Field("workingList").GetValue<List<Pawn>>();
+
+		static bool SelectRomanceAttempt(List<InteractionDef> defs, Pawn initiator, Pawn recipient, out InteractionDef result)
 		{
-			if (RiceRiceBabyMain.Settings.romancing)
-				if (initiator.CapableColonist() && recipient.CapableColonist())
-				{
-					var p1 = initiator.relations != null && LovePartnerRelationUtility.HasAnyLovePartner(initiator);
-					var p2 = recipient.relations != null && LovePartnerRelationUtility.HasAnyLovePartner(recipient);
-					var chance = (p1 || p2) ? RiceRiceBabyMain.Settings.cheatingLevel : RiceRiceBabyMain.Settings.romanceLevel;
-					if (Rand.Chance(chance))
-					{
-						result = source.First(def => def.defName == "RomanceAttempt");
-						return true;
-					}
-				}
-			return source.TryRandomElementByWeight((InteractionDef def) => weightSelector(def), out result);
+			result = null;
+
+			if (RiceRiceBabyMain.Settings.romancing == false)
+				return false;
+
+			if (defs.Any(def => def == InteractionDefOf.RomanceAttempt) == false)
+				return false;
+
+			if (initiator.IsColonist == false || recipient.IsColonist == false)
+				return false;
+
+			var p1 = LovePartnerRelationUtility.HasAnyLovePartner(initiator);
+			var p2 = LovePartnerRelationUtility.HasAnyLovePartner(recipient);
+			var chance = (p1 || p2) ? RiceRiceBabyMain.Settings.cheatingLevel : RiceRiceBabyMain.Settings.romanceLevel;
+			if (Rand.Chance(chance) == false)
+				return false;
+
+			var romanceAttempt = InteractionDefOf.RomanceAttempt;
+			if (initiator.interactions.TryInteractWith(recipient, romanceAttempt) == false)
+				return false;
+
+			result = romanceAttempt;
+			workingList.Clear();
+			return true;
 		}
 
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			var method = AccessTools.Method(typeof(GenCollection), "TryRandomElementByWeight");
+			var method = AccessTools.Method(typeof(GenCollection), nameof(GenCollection.TryRandomElementByWeight));
 			var m_TryRandomElementByWeight = method.MakeGenericMethod(typeof(InteractionDef));
-			var f_pawn = AccessTools.Field(typeof(Pawn_InteractionsTracker), "pawn");
-			InteractionDef dummy;
 
 			var list = instructions.ToList();
-			var idx = list.FirstIndexOf(code => code.opcode == OpCodes.Call && code.operand == m_TryRandomElementByWeight);
-			list.Insert(idx++, new CodeInstruction(OpCodes.Ldarg_0));
-			list.Insert(idx++, new CodeInstruction(OpCodes.Ldfld, f_pawn));
-			list.Insert(idx++, new CodeInstruction(OpCodes.Ldloc, 3));
-			list[idx].operand = SymbolExtensions.GetMethodInfo(() => TryRandomElementByWeight(default, (def) => 0f, out dummy, null, null));
+			var idx = list.FirstIndexOf(code => code.Calls(m_TryRandomElementByWeight));
+			if (idx >= 5)
+			{
+				var allDefs = list[idx - 5].opcode;
+				var intDef = list[idx - 1].operand;
+				var actionLabel = list[idx + 1].operand;
+
+				idx -= 5;
+				var idx2 = idx;
+				while (idx2 > 0 && list[idx2].opcode != OpCodes.Ldarg_0)
+					idx2--;
+				if (idx2 > 0)
+				{
+					var labels = list[idx].labels.ToArray();
+					list[idx].labels.Clear();
+
+					list.InsertRange(idx, new[]
+					{
+						new CodeInstruction(allDefs) { labels = labels.ToList() },
+						list[idx2++], list[idx2++],
+						list[idx2++], list[idx2++],
+						new CodeInstruction(OpCodes.Ldloca_S, intDef),
+						new CodeInstruction(OpCodes.Call, m_SelectRomanceAttempt),
+						new CodeInstruction(OpCodes.Brtrue, actionLabel),
+					});
+				}
+			}
 
 			return list.AsEnumerable();
 		}
@@ -105,8 +143,8 @@ namespace RiceRiceBaby
 		static void Postfix(Pawn initiator, Pawn recipient, ref float __result)
 		{
 			if (RiceRiceBabyMain.Settings.romancing == false) return;
-			if (initiator.CapableColonist() == false) return;
-			if (recipient.CapableColonist() == false) return;
+			if (initiator.IsColonist == false) return;
+			if (recipient.IsColonist == false) return;
 
 			var p1 = initiator.relations != null && LovePartnerRelationUtility.HasAnyLovePartner(initiator);
 			var p2 = recipient.relations != null && LovePartnerRelationUtility.HasAnyLovePartner(recipient);
@@ -119,4 +157,4 @@ namespace RiceRiceBaby
 				__result = RiceRiceBabyMain.Settings.romanceLevel;
 		}
 	}
-} 
+}

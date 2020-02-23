@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using RimWorld;
 using System;
 using UnityEngine;
@@ -37,7 +37,7 @@ namespace RiceRiceBaby
 
 	[HarmonyPatch(typeof(Toils_Ingest))]
 	[HarmonyPatch(nameof(Toils_Ingest.ChewIngestible))]
-	static class Toils_Ingest_FinalizeIngest_Patch
+	static class Toils_Ingest_ChewIngestible_Patch
 	{
 		static void ThrowMote(Vector3 loc, Map map, float size, float angle)
 		{

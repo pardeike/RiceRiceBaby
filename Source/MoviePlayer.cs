@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using Verse;
-
-namespace RiceRiceBaby
+﻿namespace RiceRiceBaby
 {
-	public class Movie
+	// TODO: need to use VideoPlayer in Unity 2019
+	//
+	/*public class Movie
 	{
 		public readonly MovieTexture texture;
 		public Rect position = Rect.zero;
@@ -63,7 +60,7 @@ namespace RiceRiceBaby
 			if (cachedTextures.TryGetValue(name, out var texture) == false)
 			{
 				var loader = new WWW("file:" + "///" + RiceRiceBabyMain.rootDir + "/Movies/" + name + ".ogv");
-				texture = WWWAudioExtensions.GetMovieTexture(loader);
+				texture = loader.GetMovieTexture();
 			}
 			return texture;
 		}
@@ -88,5 +85,5 @@ namespace RiceRiceBaby
 			foreach (var movie in movies.ToArray())
 				movie.Update();
 		}
-	}
+	}*/
 }

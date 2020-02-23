@@ -42,7 +42,7 @@ namespace RiceRiceBaby
 		static readonly Dictionary<Couple, Lovin> state = new Dictionary<Couple, Lovin>();
 		static readonly Rot4[] directions = new[] { Rot4.East, Rot4.South, Rot4.West };
 
-		public readonly bool onTop;
+		public bool onTop;
 		public readonly Rot4[] face = new[] { Rot4.South, Rot4.South };
 
 		// transient
@@ -50,30 +50,30 @@ namespace RiceRiceBaby
 		public Vector3 shortSide;
 		public float longHump;
 		public float sway;
+		public bool flipped;
 
-		public static Lovin LovinFor(Pawn p1, Pawn p2)
+		public static Lovin LovinFor(Pawn p1, Pawn p2, bool bedFlipped)
 		{
 			var couple = new Couple(p1, p2);
 			if (state.TryGetValue(couple, out var result) == false)
 			{
 				result = new Lovin();
+				result.PrepHeads(bedFlipped);
 				state[couple] = result;
 			}
 			return result;
 		}
 
-		public static void Done(Pawn pawn)
+		public void PrepHeads(bool flipped)
 		{
-			_ = state.RemoveAll(pair => pair.Key.Contains(pawn));
-		}
+			this.flipped = flipped;
 
-		public Lovin()
-		{
 			onTop = Rand.Bool;
 			if (onTop)
 			{
-				face[0] = Rot4.North;
-				face[1] = Rot4.Random;
+				var n = Rand.Range(0, 1);
+				face[n] = Rot4.North;
+				face[1 - n] = Rot4.Random;
 			}
 			else
 			{
@@ -81,9 +81,15 @@ namespace RiceRiceBaby
 				{
 					face[0] = directions[Rand.Range(0, 3)];
 					face[1] = directions[Rand.Range(0, 3)];
-					if (face[0] == Rot4.East || face[1] == Rot4.West) break;
+					if (flipped == false && (face[0] == Rot4.East || face[1] == Rot4.West)) break;
+					if (flipped == true && (face[0] == Rot4.West || face[1] == Rot4.East)) break;
 				}
 			}
+		}
+
+		public static void Done(Pawn pawn)
+		{
+			_ = state.RemoveAll(pair => pair.Key.Contains(pawn));
 		}
 	}
 }

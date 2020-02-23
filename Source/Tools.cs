@@ -38,10 +38,12 @@ namespace RiceRiceBaby
 
 		static long freezeTicks = 0;
 		static long subTicks = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+		static readonly long startTicks = DateTime.Now.Ticks;
+		const float slowness = 2000f;
 
-		public static long Ticker()
+		public static float Ticker()
 		{
-			var nowTicks = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+			var nowTicks = (DateTime.Now.Ticks - startTicks) / TimeSpan.TicksPerMillisecond;
 			var paused = Find.TickManager.Paused;
 
 			if (freezeTicks == 0 && paused)
@@ -54,8 +56,8 @@ namespace RiceRiceBaby
 			}
 
 			if (paused)
-				return freezeTicks;
-			return nowTicks - subTicks;
+				return freezeTicks / slowness;
+			return (nowTicks - subTicks) / slowness;
 		}
 	}
 }

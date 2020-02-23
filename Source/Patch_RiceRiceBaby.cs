@@ -118,6 +118,7 @@ namespace RiceRiceBaby
 
 			var bed = pawn.CurrentBed();
 			if (bed == null) return null;
+			var baseRotation = bed.Rotation;
 
 			var idx = bed.GetCurOccupantSlotIndex(pawn);
 			if (idx < 0 || idx > 1) return null;
@@ -129,14 +130,13 @@ namespace RiceRiceBaby
 			if (driver1 == null || driver2 == null) return null;
 			var ticksLeft = Math.Min(ticksLeftRef(driver1), ticksLeftRef(driver2));
 
-			var lovin = Lovin.LovinFor(pawn, partner);
+			var lovin = Lovin.LovinFor(pawn, partner, baseRotation.AsInt < 2);
 
-			var baseRotation = bed.Rotation;
 			lovin.longSide = baseRotation.FacingCell.ToVector3();
 			var orthogonalRotation = baseRotation.Rotated(RotationDirection.Clockwise);
 			lovin.shortSide = orthogonalRotation.FacingCell.ToVector3();
 
-			var ticks = Tools.Ticker() / 1000f;
+			var ticks = Tools.Ticker();
 			var offset = pawn.GetHashCode() % 1000 - 500;
 
 			const float maxTicksLeft = 2500f;
@@ -163,12 +163,13 @@ namespace RiceRiceBaby
 			if (lovin == null) return;
 
 			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
-			var ticks = Tools.Ticker() / 1000f;
+			var ticks = Tools.Ticker();
 
 			headFacing = lovin.face[idx];
 			if (lovin.onTop)
 			{
 				var shortHump = idx == 0 ? -0.45f : 0.45f;
+				if (lovin.flipped) shortHump *= -1;
 				if (setRootLoc)
 				{
 					rootLoc += lovin.longSide * lovin.longHump + lovin.shortSide * shortHump;
@@ -180,6 +181,7 @@ namespace RiceRiceBaby
 			else
 			{
 				var shortHump = idx == 0 ? -0.2f - lovin.sway : 0.2f + lovin.sway;
+				if (lovin.flipped) shortHump *= -1;
 				if (setRootLoc)
 					rootLoc += lovin.longSide * lovin.longHump + lovin.shortSide * shortHump;
 				angle += (float)Math.Sin(ticks * 50f) * 2f;
@@ -244,7 +246,6 @@ namespace RiceRiceBaby
 			if (lovin == null) return;
 
 			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
-			// var ticks = Tools.Ticker() / 1000f;
 
 			if (lovin.onTop)
 			{

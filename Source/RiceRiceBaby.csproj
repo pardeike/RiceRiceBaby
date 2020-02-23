@@ -38,6 +38,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CrossPromotion.cs" />
+    <Compile Include="ModCounter.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="MoviePlayer.cs" />
     <Compile Include="Patch_HeyRomance.cs" />

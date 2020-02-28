@@ -16,7 +16,7 @@ namespace RiceRiceBaby
 			Settings = GetSettings<RiceRiceBabySettings>();
 
 			var harmony = new Harmony("net.pardeike.rimworld.mod.ricericebaby");
-			harmony.PatchAll(Assembly.GetExecutingAssembly());
+			harmony.PatchAll();
 		}
 
 		public override void DoSettingsWindowContents(Rect inRect)

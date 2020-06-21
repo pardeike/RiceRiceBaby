@@ -79,6 +79,9 @@ namespace RiceRiceBaby
 			if (initiator.IsColonist == false || recipient.IsColonist == false)
 				return false;
 
+			if (LovePartnerRelationUtility.LovePartnerRelationExists(initiator, recipient))
+				return false;
+
 			var p1 = LovePartnerRelationUtility.HasAnyLovePartner(initiator);
 			var p2 = LovePartnerRelationUtility.HasAnyLovePartner(recipient);
 			var chance = (p1 || p2) ? RiceRiceBabyMain.Settings.cheatingLevel : RiceRiceBabyMain.Settings.romanceLevel;

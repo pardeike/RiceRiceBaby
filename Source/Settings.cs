@@ -14,6 +14,7 @@ namespace RiceRiceBaby
 		public float romanceLevel = 0.4f;
 		public float cheatingLevel = 0.2f;
 		public float riceLevel = 0.4f;
+		public float riceForce = 0.75f;
 
 		public override void ExposeData()
 		{
@@ -27,6 +28,7 @@ namespace RiceRiceBaby
 			Scribe_Values.Look(ref romanceLevel, "romanceLevel", 0.4f);
 			Scribe_Values.Look(ref cheatingLevel, "cheatingLevel", 0.2f);
 			Scribe_Values.Look(ref riceLevel, "riceLevel", 0.4f);
+			Scribe_Values.Look(ref riceForce, "riceForce", 0.75f);
 
 			if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs)
 			{
@@ -57,6 +59,9 @@ namespace RiceRiceBaby
 
 				list.Label("Rice: " + (int)(riceLevel * 100) + "%");
 				riceLevel = list.Slider(riceLevel, 0f, 1f);
+
+				list.Label("Rice Force: " + (int)(riceForce * 100) + "%");
+				riceForce = list.Slider(riceForce, 0f, 1f);
 			}
 
 			list.End();

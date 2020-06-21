@@ -44,7 +44,12 @@ namespace RiceRiceBaby
 						Throttled.Every(3, pawn, ThrottleType.breakingBed, () =>
 						{
 							Defs.breakSound.PlaySound(cell, map);
-							_ = bed.TakeDamage(new DamageInfo(DamageDefOf.Crush, Rand.Range(20f, 40f)));
+							var factor = RiceRiceBabyMain.Settings.riceForce;
+							if (factor > 0)
+							{
+								var damageInfo = new DamageInfo(DamageDefOf.Crush, factor * Rand.Range(20f, 40f));
+								_ = bed.TakeDamage(damageInfo);
+							}
 						});
 						playDefaultSound = false;
 					}

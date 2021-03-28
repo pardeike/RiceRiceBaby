@@ -1,5 +1,9 @@
 ﻿using HarmonyLib;
+using RimWorld;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using UnityEngine;
 using Verse;
 
 namespace RiceRiceBaby
@@ -21,17 +25,48 @@ namespace RiceRiceBaby
 		{
 			if (RiceRiceBabyMain.Settings.whipAchtungForce)
 			{
-				// TODO: need to use VideoPlayer in Unity 2019
-				//
-				/*var w = 320f;
-				var h = 234f;
-				var dx = (Screen.width - w) / 2f;
-				var dy = (Screen.height - h) / 2f;
-				var rect = new Rect(dx, dy, w, h);
-				_ = pawn.Map.GetComponent<MoviePlayer>().Play("Whip", rect, false);*/
-
+				VideoPlayer_OnGUI.started = Time.realtimeSinceStartup;
 				Defs.whipSound.PlaySound(pawn);
 			}
+		}
+	}
+
+	[StaticConstructorOnStartup]
+	[HarmonyPatch(typeof(UIRoot_Play), nameof(UIRoot_Play.UIRootOnGUI))]
+	static class VideoPlayer_OnGUI
+	{
+		public static Texture2D[] frames = Enumerable.Range(1, 25).Select(i =>
+		{
+			var texture = new Texture2D(320, 240, TextureFormat.ARGB32, false);
+			var path = Path.Combine(RiceRiceBabyMain.rootDir, "Textures", "Whip", $"{i:D2}.png");
+			_ = texture.LoadImage(File.ReadAllBytes(path));
+			return texture;
+		}).ToArray();
+
+		const float movieTime = 1.3f;
+		const float width = 640;
+		const float height = 480;
+		public static float started = 0;
+
+		static void Postfix()
+		{
+			if (started == 0) return;
+
+			var delta = Time.realtimeSinceStartup - started;
+			var i = (int)(Mathf.Min(1, delta / movieTime) * frames.Length);
+			if (i == frames.Length)
+			{
+				started = 0;
+				return;
+			}
+
+			Color backgroundColor = GUI.backgroundColor;
+			GUI.backgroundColor = Color.white;
+			var x = (UI.screenWidth - width) / 2;
+			var y = (UI.screenHeight - height) / 2;
+			var rect = new Rect(new Vector2(x, y), new Vector2(width, height));
+			GUI.DrawTexture(rect, frames[i], ScaleMode.ScaleToFit);
+			GUI.backgroundColor = backgroundColor;
 		}
 	}
 }

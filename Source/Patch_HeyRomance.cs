@@ -40,7 +40,7 @@ namespace RiceRiceBaby
 			if (Rand.Chance(RiceRiceBabyMain.Settings.riceLevel))
 				__result = 0.1f;
 
-			Log.Warning($"GetLovinMtbHours {__result} " + pawn.Name.ToStringShort + " " + partner.Name.ToStringShort);
+			// Log.Warning($"GetLovinMtbHours {__result} " + pawn.Name.ToStringShort + " " + partner.Name.ToStringShort);
 		}
 	}
 

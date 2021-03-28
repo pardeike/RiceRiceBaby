@@ -41,7 +41,6 @@
     <Compile Include="CrossPromotion.cs" />
     <Compile Include="ModCounter.cs" />
     <Compile Include="Tools.cs" />
-    <Compile Include="MoviePlayer.cs" />
     <Compile Include="Patch_HeyRomance.cs" />
     <Compile Include="Patch_Death.cs" />
     <Compile Include="Patch_Profanity.cs" />
@@ -177,6 +176,6 @@
     <PostBuildEvent>ModBuilder AssemblyVersion -file "$(TargetPath)" -save "$(ProjectName)-version"
 ModBuilder XMLPut -file "$(SolutionDir)About\Manifest.xml" -xpath /Manifest/version -value "{{$(ProjectName)-version}}"
 ModBuilder XMLPut -file "$(SolutionDir)About\ModSync.xml" -xpath /ModSyncNinjaData/Version -value "{{$(ProjectName)-version}}"
-"$(ProjectDir)Install.bat" $(ConfigurationName) "$(ProjectDir)" "$(ProjectName)" "About Assemblies Current Defs Movies Sounds Textures" "LoadFolders.xml"</PostBuildEvent>
+"$(ProjectDir)Install.bat" $(ConfigurationName) "$(ProjectDir)" "$(ProjectName)" "About Assemblies Current Defs Sounds Textures" "LoadFolders.xml"</PostBuildEvent>
   </PropertyGroup>
 </Project>

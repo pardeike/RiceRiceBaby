@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System.Reflection;
 using UnityEngine;
 using Verse;
 
@@ -27,6 +26,16 @@ namespace RiceRiceBaby
 		public override string SettingsCategory()
 		{
 			return "Rice Rice Baby";
+		}
+	}
+
+	[HarmonyPatch(typeof(Game))]
+	[HarmonyPatch("FinalizeInit")]
+	static class Game_FinalizeInit_Patch
+	{
+		public static void Postfix()
+		{
+			ModCounter.Trigger();
 		}
 	}
 }

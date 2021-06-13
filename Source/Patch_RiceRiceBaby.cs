@@ -114,8 +114,6 @@ namespace RiceRiceBaby
 
 	static class LoveAnimation
 	{
-		static readonly AccessTools.FieldRef<JobDriver_Lovin, int> ticksLeftRef = AccessTools.FieldRefAccess<JobDriver_Lovin, int>("ticksLeft");
-
 		public static Lovin GetLovin(Pawn pawn)
 		{
 			if (RiceRiceBabyMain.Settings.lovin == false) return null;
@@ -133,7 +131,7 @@ namespace RiceRiceBaby
 			var driver1 = pawn.jobs.curDriver as JobDriver_Lovin;
 			var driver2 = partner.jobs.curDriver as JobDriver_Lovin;
 			if (driver1 == null || driver2 == null) return null;
-			var ticksLeft = Math.Min(ticksLeftRef(driver1), ticksLeftRef(driver2));
+			var ticksLeft = Math.Min(driver1.ticksLeft, driver2.ticksLeft);
 
 			var lovin = Lovin.LovinFor(pawn, partner, baseRotation.AsInt < 2);
 

@@ -59,12 +59,8 @@ namespace RiceRiceBaby
 	[HarmonyPatch("TryInteractRandomly")]
 	static class GenCollection_TryInteractRandomly_Patch
 	{
-#pragma warning disable IDE0052
 		static InteractionDef dummy = null;
-#pragma warning restore IDE0052
-
 		static readonly MethodInfo m_SelectRomanceAttempt = SymbolExtensions.GetMethodInfo(() => SelectRomanceAttempt(default, null, null, out dummy));
-		static readonly List<Pawn> workingList = Traverse.Create<Pawn_InteractionsTracker>().Field("workingList").GetValue<List<Pawn>>();
 
 		static bool SelectRomanceAttempt(List<InteractionDef> defs, Pawn initiator, Pawn recipient, out InteractionDef result)
 		{
@@ -93,7 +89,7 @@ namespace RiceRiceBaby
 				return false;
 
 			result = romanceAttempt;
-			workingList.Clear();
+			Pawn_InteractionsTracker.workingList.Clear();
 			return true;
 		}
 

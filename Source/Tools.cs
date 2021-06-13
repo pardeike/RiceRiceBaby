@@ -8,7 +8,7 @@ namespace RiceRiceBaby
 	{
 		public static void ManipulateDefs()
 		{
-			void MakeEasy(ThoughtDef def)
+			static void MakeEasy(ThoughtDef def)
 			{
 				def.durationDays = 1;
 				def.stackLimit = 8;

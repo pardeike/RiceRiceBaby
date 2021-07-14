@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+	<ThingDef ParentName="MoteBase">
+		<defName>Mote_Rice</defName>
+		<graphicData>
+			<texPath>Rice</texPath>
+		</graphicData>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<mote>
+			<fadeInTime>0.08</fadeInTime>
+			<solidTime>1.4</solidTime>
+			<fadeOutTime>1.5</fadeOutTime>
+		</mote>
+	</ThingDef>
+
+	<ThingDef ParentName="MoteBase">
+		<defName>Mote_WantRice</defName>
+		<graphicData>
+			<texPath>WantRice</texPath>
+		</graphicData>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<mote>
+			<fadeInTime>0.08</fadeInTime>
+			<solidTime>1.4</solidTime>
+			<fadeOutTime>1.5</fadeOutTime>
+		</mote>
+	</ThingDef>
+
+	<ThingDef ParentName="MoodMoteBase">
+		<defName>Mote_Swear</defName>
+		<graphicData>
+			<color>(64,0,0)</color>
+		</graphicData>
+	</ThingDef>
+
+	<ThingDef ParentName="MoteBase">
+		<defName>Mote_Amazing</defName>
+		<altitudeLayer>MoteOverhead</altitudeLayer>
+		<thingClass>MoteThrown</thingClass>
+		<mote>
+			<fadeInTime>1</fadeInTime>
+			<solidTime>1</solidTime>
+			<fadeOutTime>1</fadeOutTime>
+			<growthRate>2</growthRate>
+			<collide>false</collide>
+		</mote>
+		<graphicData>
+			<texPath>Amazing</texPath>
+			<shaderType>Transparent</shaderType>
+		</graphicData>
+	</ThingDef>
+
+	<ThingDef ParentName="MoteBase">
+		<defName>Mote_Gas</defName>
+		<graphicData>
+			<texPath>Gas</texPath>
+		</graphicData>
+		<altitudeLayer>MoteOverhead</altitudeLayer>
+		<mote>
+			<fadeInTime>0.50</fadeInTime>
+			<solidTime>6</solidTime>
+			<fadeOutTime>3.2</fadeOutTime>
+			<growthRate>0.005</growthRate>
+		</mote>
+	</ThingDef>
+
+</Defs>

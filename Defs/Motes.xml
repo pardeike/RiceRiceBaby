@@ -1,31 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-	
-	<ThingDef ParentName="MoteBase">
-		<defName>Mote_Rice</defName>
-		<graphicData>
-			<texPath>Rice</texPath>
-		</graphicData>
-		<altitudeLayer>MetaOverlays</altitudeLayer>
-		<mote>
-			<fadeInTime>0.08</fadeInTime>
-			<solidTime>1.4</solidTime>
-			<fadeOutTime>1.5</fadeOutTime>
-		</mote>
-	</ThingDef>
-
-	<ThingDef ParentName="MoteBase">
-		<defName>Mote_WantRice</defName>
-		<graphicData>
-			<texPath>WantRice</texPath>
-		</graphicData>
-		<altitudeLayer>MetaOverlays</altitudeLayer>
-		<mote>
-			<fadeInTime>0.08</fadeInTime>
-			<solidTime>1.4</solidTime>
-			<fadeOutTime>1.5</fadeOutTime>
-		</mote>
-	</ThingDef>
 
 	<ThingDef ParentName="MoodMoteBase">
 		<defName>Mote_Swear</defName>

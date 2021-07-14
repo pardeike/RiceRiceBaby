@@ -2,6 +2,7 @@
 using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -9,8 +10,7 @@ using Verse;
 
 namespace RiceRiceBaby
 {
-	[HarmonyPatch(typeof(MoteMaker))]
-	[HarmonyPatch(nameof(MoteMaker.ThrowMetaIcon))]
+	[HarmonyPatch(typeof(FleckMaker), nameof(FleckMaker.ThrowMetaIcon))]
 	static class MoteMaker_ThrowMetaIcon_Patch1
 	{
 		static bool Lovin(Pawn pawn)
@@ -29,7 +29,7 @@ namespace RiceRiceBaby
 				if (Rand.Chance(0.5f))
 					soundDef.PlaySound(cell, map);
 
-				_ = MoteMaker.ThrowMetaIcon(cell, map, Defs.riceMote);
+				FleckMaker.ThrowMetaIcon(cell, map, Defs.riceMote);
 				Defs.riceSound.PlaySound(cell, map);
 				return false;
 			}
@@ -73,7 +73,7 @@ namespace RiceRiceBaby
 				Throttled.AfterIdle(10, pawn, ThrottleType.lastBreath, () =>
 				{
 					Defs.whisleSound.PlaySound(cell, map);
-					_ = MoteMaker.ThrowMetaIcon(cell, map, Defs.wantRiceMote);
+					FleckMaker.ThrowMetaIcon(cell, map, Defs.wantRiceMote);
 					stop = true;
 				});
 				if (stop)
@@ -84,7 +84,7 @@ namespace RiceRiceBaby
 				if (Rand.Chance(0.1f))
 				{
 					Defs.achSound.PlaySound(cell, map);
-					_ = MoteMaker.ThrowMetaIcon(cell, map, Defs.wantRiceMote);
+					FleckMaker.ThrowMetaIcon(cell, map, Defs.wantRiceMote);
 					return false;
 				}
 			}
@@ -92,9 +92,9 @@ namespace RiceRiceBaby
 			return true;
 		}
 
-		static bool Prefix(IntVec3 cell, Map map, ThingDef moteDef)
+		static bool Prefix(IntVec3 cell, Map map, FleckDef fleckDef)
 		{
-			if (RiceRiceBabyMain.Settings.lovin && moteDef == ThingDefOf.Mote_Heart)
+			if (RiceRiceBabyMain.Settings.lovin && fleckDef == FleckDefOf.Heart)
 			{
 				var pawn = map.thingGrid.ThingAt<Pawn>(cell);
 				if (pawn == null || pawn.IsColonist == false) return true;
@@ -128,9 +128,7 @@ namespace RiceRiceBaby
 
 			var partner = bed.GetCurOccupant(1 - idx);
 
-			var driver1 = pawn.jobs.curDriver as JobDriver_Lovin;
-			var driver2 = partner.jobs.curDriver as JobDriver_Lovin;
-			if (driver1 == null || driver2 == null) return null;
+			if (!(pawn.jobs.curDriver is JobDriver_Lovin driver1) || !(partner.jobs.curDriver is JobDriver_Lovin driver2)) return null;
 			var ticksLeft = Math.Min(driver1.ticksLeft, driver2.ticksLeft);
 
 			var lovin = Lovin.LovinFor(pawn, partner, baseRotation.AsInt < 2);
@@ -153,14 +151,76 @@ namespace RiceRiceBaby
 		}
 	}
 
-	[HarmonyPatch(typeof(PawnRenderer))]
-	[HarmonyPatch("RenderPawnInternal")]
-	[HarmonyPatch(new[] { typeof(Vector3), typeof(float), typeof(bool), typeof(Rot4), typeof(Rot4), typeof(RotDrawMode), typeof(bool), typeof(bool), typeof(bool) })]
+	[HarmonyPatch(typeof(PawnRenderer), nameof(PawnRenderer.RenderPawnAt))]
+	static class PawnRenderer_RenderPawnAt_Patch
+	{
+		static bool ClearCache(Pawn pawn, bool useCache)
+		{
+			if (useCache)
+			{
+				var lovin = LoveAnimation.GetLovin(pawn);
+				useCache = lovin == null;
+				Log.Warning($"Setting useCache to {useCache}");
+			}
+			return useCache;
+		}
+
+		static readonly MethodInfo mGetPosture = SymbolExtensions.GetMethodInfo(() => PawnUtility.GetPosture(null));
+		static readonly FieldInfo fPawn = AccessTools.Field(typeof(PawnRenderer), nameof(PawnRenderer.pawn));
+		static readonly MethodInfo mClearCache = SymbolExtensions.GetMethodInfo(() => ClearCache(default, default));
+		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		{
+			var list = instructions.ToList();
+
+			var idx = list.FindIndex(code => code.Calls(mGetPosture));
+			if (idx == -1)
+			{
+				Log.Error("Cannot find CALL PawnUtility.GetPosture in PawnRenderer.RenderPawnAt");
+				return list.AsEnumerable();
+			}
+
+			idx -= 2;
+			if (list[idx].opcode != OpCodes.Ldarg_0)
+			{
+				Log.Error("Weird call to PawnUtility.GetPosture in PawnRenderer.RenderPawnAt");
+				return list.AsEnumerable();
+			}
+
+			var ldloc = new CodeInstruction(OpCodes.Nop);
+			var stloc = list[idx - 1].opcode;
+			var stloc_nr = list[idx - 1].operand;
+			if (stloc == OpCodes.Stloc_0) ldloc = new CodeInstruction(OpCodes.Ldloc_0);
+			if (stloc == OpCodes.Stloc_1) ldloc = new CodeInstruction(OpCodes.Ldloc_1);
+			if (stloc == OpCodes.Stloc_2) ldloc = new CodeInstruction(OpCodes.Ldloc_2);
+			if (stloc == OpCodes.Stloc_3) ldloc = new CodeInstruction(OpCodes.Ldloc_3);
+			if (stloc == OpCodes.Stloc) ldloc = new CodeInstruction(OpCodes.Ldloc, stloc_nr);
+			if (ldloc.opcode == OpCodes.Nop)
+			{
+				Log.Error("Wrong local variable in PawnRenderer.RenderPawnAt");
+				return list.AsEnumerable();
+			}
+
+			var labels = new List<Label>(list[idx].labels);
+			list[idx].labels.Clear();
+			list.InsertRange(idx, new[]
+			{
+				new CodeInstruction(OpCodes.Ldarg_0) { labels = labels },
+				new CodeInstruction(OpCodes.Ldfld, fPawn),
+				new CodeInstruction(ldloc),
+				new CodeInstruction(OpCodes.Call, mClearCache),
+				new CodeInstruction(stloc),
+			});
+			return list.AsEnumerable();
+		}
+	}
+
+	[HarmonyPatch(typeof(PawnRenderer), nameof(PawnRenderer.RenderPawnInternal))]
+	[HarmonyPatch(new[] { typeof(Vector3), typeof(float), typeof(bool), typeof(Rot4), typeof(RotDrawMode), typeof(PawnRenderFlags) })]
 	static class PawnRenderer_RenderPawnInternal_Patch
 	{
 		public static bool setRootLoc = true;
 
-		public static void LovinFix(Pawn pawn, ref Vector3 rootLoc, ref float angle, ref Rot4 headFacing)
+		public static void LovinFix(Pawn pawn, ref Vector3 rootLoc, ref float angle, ref Rot4 bodyFacing)
 		{
 			var lovin = LoveAnimation.GetLovin(pawn);
 			if (lovin == null) return;
@@ -168,7 +228,7 @@ namespace RiceRiceBaby
 			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
 			var ticks = Tools.Ticker();
 
-			headFacing = lovin.face[idx];
+			bodyFacing = lovin.face[idx];
 			if (lovin.onTop)
 			{
 				var shortHump = idx == 0 ? -0.45f : 0.45f;
@@ -195,10 +255,10 @@ namespace RiceRiceBaby
 		{
 			var dummy1 = Vector3.zero; var dummy2 = 0f; var dummy3 = Rot4.Invalid;
 			yield return new CodeInstruction(OpCodes.Ldarg_0);
-			yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), "pawn"));
+			yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), nameof(PawnRenderer.pawn)));
 			yield return new CodeInstruction(OpCodes.Ldarga_S, 1);
 			yield return new CodeInstruction(OpCodes.Ldarga_S, 2);
-			yield return new CodeInstruction(OpCodes.Ldarga_S, 5);
+			yield return new CodeInstruction(OpCodes.Ldarga_S, 4);
 			yield return new CodeInstruction(OpCodes.Call, SymbolExtensions.GetMethodInfo(() => LovinFix(null, ref dummy1, ref dummy2, ref dummy3)));
 			foreach (var instruction in instructions)
 				yield return instruction;
@@ -265,8 +325,7 @@ namespace RiceRiceBaby
 		}
 	}
 
-	[HarmonyPatch(typeof(MemoryThoughtHandler))]
-	[HarmonyPatch(nameof(MemoryThoughtHandler.TryGainMemory))]
+	[HarmonyPatch(typeof(MemoryThoughtHandler), nameof(MemoryThoughtHandler.TryGainMemory))]
 	[HarmonyPatch(new Type[] { typeof(Thought_Memory), typeof(Pawn) })]
 	static class MemoryThoughtHandler_TryGainMemory_Patch2
 	{
@@ -304,8 +363,7 @@ namespace RiceRiceBaby
 		}
 	}
 
-	[HarmonyPatch(typeof(Pawn_InteractionsTracker))]
-	[HarmonyPatch(nameof(Pawn_InteractionsTracker.TryInteractWith))]
+	[HarmonyPatch(typeof(Pawn_InteractionsTracker), nameof(Pawn_InteractionsTracker.TryInteractWith))]
 	static class Pawn_InteractionsTracker_TryInteractWith_Patch
 	{
 		static void Postfix(InteractionDef intDef, Pawn ___pawn, bool __result)

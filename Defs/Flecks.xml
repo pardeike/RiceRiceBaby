@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<FleckDef ParentName="FleckBase_Thrown">
+		<defName>Fleck_Rice</defName>
+		<graphicData>
+			<texPath>Rice</texPath>
+		</graphicData>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<fadeInTime>0.08</fadeInTime>
+		<solidTime>1.4</solidTime>
+		<fadeOutTime>1.5</fadeOutTime>
+	</FleckDef>
+
+	<FleckDef ParentName="FleckBase_Thrown">
+		<defName>Fleck_WantRice</defName>
+		<graphicData>
+			<texPath>WantRice</texPath>
+		</graphicData>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<fadeInTime>0.08</fadeInTime>
+		<solidTime>1.4</solidTime>
+		<fadeOutTime>1.5</fadeOutTime>
+	</FleckDef>
+
+</Defs>

@@ -7,8 +7,7 @@ using Verse;
 
 namespace RiceRiceBaby
 {
-	[HarmonyPatch(typeof(MemoryThoughtHandler))]
-	[HarmonyPatch(nameof(MemoryThoughtHandler.TryGainMemory))]
+	[HarmonyPatch(typeof(MemoryThoughtHandler), nameof(MemoryThoughtHandler.TryGainMemory))]
 	[HarmonyPatch(new Type[] { typeof(Thought_Memory), typeof(Pawn) })]
 	static class MemoryThoughtHandler_TryGainMemory_Patch1
 	{
@@ -22,13 +21,13 @@ namespace RiceRiceBaby
 						var cell = pawn.Position;
 						var map = pawn.Map;
 
-						var motestToRemove = cell.GetThingList(map)
+						var motesToRemove = cell.GetThingList(map)
 							.OfType<MoteBubble>()
 							.Where(mote => mote.link1.Linked && mote.link1.Target.HasThing && mote.link1.Target == pawn)
 							.Where(mote => mote.def != Defs.swearMote)
 							.ToArray();
-						for (var i = 0; i < motestToRemove.Length; i++)
-							motestToRemove[i].Destroy(DestroyMode.Vanish);
+						for (var i = 0; i < motesToRemove.Length; i++)
+							motesToRemove[i].Destroy(DestroyMode.Vanish);
 
 						var bubble = (MoteBubble)ThingMaker.MakeThing(Defs.swearMote, null);
 						bubble.SetupMoteBubble(swearThought.icon, null);

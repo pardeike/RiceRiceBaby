@@ -7,14 +7,13 @@ using Verse.AI;
 
 namespace RiceRiceBaby
 {
-	[HarmonyPatch(typeof(MoteMaker))]
-	[HarmonyPatch(nameof(MoteMaker.ThrowMetaIcon))]
+	[HarmonyPatch(typeof(FleckMaker), nameof(FleckMaker.ThrowMetaIcon))]
 	static class MoteMaker_ThrowMetaIcon_Patch2
 	{
-		static void Postfix(IntVec3 cell, Map map, ThingDef moteDef)
+		static void Postfix(IntVec3 cell, Map map, FleckDef fleckDef)
 		{
-			if (RiceRiceBabyMain.Settings.profanity == false || moteDef != ThingDefOf.Mote_SleepZ) return;
-			
+			if (RiceRiceBabyMain.Settings.profanity == false || fleckDef != FleckDefOf.SleepZ) return;
+
 			var pawn = map.thingGrid.ThingAt<Pawn>(cell);
 			if (pawn.IsColonist == false) return;
 
@@ -35,8 +34,7 @@ namespace RiceRiceBaby
 		}
 	}
 
-	[HarmonyPatch(typeof(Toils_Ingest))]
-	[HarmonyPatch(nameof(Toils_Ingest.ChewIngestible))]
+	[HarmonyPatch(typeof(Toils_Ingest), nameof(Toils_Ingest.ChewIngestible))]
 	static class Toils_Ingest_ChewIngestible_Patch
 	{
 		static void ThrowMote(Vector3 loc, Map map, float size, float angle)
@@ -48,7 +46,7 @@ namespace RiceRiceBaby
 			mote.SetVelocity(angle + Rand.Range(-15, 15), Rand.Range(0.5f, 0.7f));
 			_ = GenSpawn.Spawn(mote, loc.ToIntVec3(), map);
 		}
-		
+
 		static void Postfix(Pawn chewer, float durationMultiplier, TargetIndex ingestibleInd, Toil __result)
 		{
 			if (RiceRiceBabyMain.Settings.profanity == false) return;

@@ -22,8 +22,7 @@ namespace RiceRiceBaby
 
 		public override bool Equals(object obj)
 		{
-			var other = obj as Couple;
-			if (other == null)
+			if (!(obj is Couple other))
 				return false;
 			return (p1 == other.p1 && p2 == other.p2) || (p2 == other.p1 && p1 == other.p2);
 		}

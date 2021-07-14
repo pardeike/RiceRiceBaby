@@ -8,8 +8,7 @@ using Verse;
 
 namespace RiceRiceBaby
 {
-	[HarmonyPatch(typeof(Root_Play))]
-	[HarmonyPatch(nameof(Root_Play.Start))]
+	[HarmonyPatch(typeof(Root_Play), nameof(Root_Play.Start))]
 	static class Root_Play_Start_Patch
 	{
 		static void Prefix()
@@ -19,8 +18,7 @@ namespace RiceRiceBaby
 		}
 	}
 
-	[HarmonyPatch(typeof(LovePartnerRelationUtility))]
-	[HarmonyPatch(nameof(LovePartnerRelationUtility.GetLovinMtbHours))]
+	[HarmonyPatch(typeof(LovePartnerRelationUtility), nameof(LovePartnerRelationUtility.GetLovinMtbHours))]
 	static class LovePartnerRelationUtility_GetLovinMtbHours_Patch
 	{
 		static void Postfix(Pawn pawn, Pawn partner, ref float __result)
@@ -39,13 +37,10 @@ namespace RiceRiceBaby
 
 			if (Rand.Chance(RiceRiceBabyMain.Settings.riceLevel))
 				__result = 0.1f;
-
-			// Log.Warning($"GetLovinMtbHours {__result} " + pawn.Name.ToStringShort + " " + partner.Name.ToStringShort);
 		}
 	}
 
-	[HarmonyPatch(typeof(JobDriver_Lovin))]
-	[HarmonyPatch("GenerateRandomMinTicksToNextLovin")]
+	[HarmonyPatch(typeof(JobDriver_Lovin), nameof(JobDriver_Lovin.GenerateRandomMinTicksToNextLovin))]
 	static class JobDriver_Lovin_GenerateRandomMinTicksToNextLovin_Patch
 	{
 		static void Postfix(ref int __result)
@@ -55,8 +50,7 @@ namespace RiceRiceBaby
 		}
 	}
 
-	[HarmonyPatch(typeof(Pawn_InteractionsTracker))]
-	[HarmonyPatch("TryInteractRandomly")]
+	[HarmonyPatch(typeof(Pawn_InteractionsTracker), nameof(Pawn_InteractionsTracker.TryInteractRandomly))]
 	static class GenCollection_TryInteractRandomly_Patch
 	{
 		static InteractionDef dummy = null;
@@ -131,8 +125,7 @@ namespace RiceRiceBaby
 		}
 	}
 
-	[HarmonyPatch(typeof(InteractionWorker_RomanceAttempt))]
-	[HarmonyPatch(nameof(InteractionWorker_RomanceAttempt.SuccessChance))]
+	[HarmonyPatch(typeof(InteractionWorker_RomanceAttempt), nameof(InteractionWorker_RomanceAttempt.SuccessChance))]
 	static class InteractionWorker_RomanceAttempt_SuccessChance_Patch
 	{
 		// https://github.com/rwpsychology/Psychology/blob/638698b6982931216a25465067b1e37034f842a3/Source/Psychology/Harmony/InteractionWorker_RomanceAttempt.cs#L194

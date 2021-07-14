@@ -3,8 +3,7 @@ using Verse;
 
 namespace RiceRiceBaby
 {
-	[HarmonyPatch(typeof(Pawn_HealthTracker))]
-	[HarmonyPatch(nameof(Pawn_HealthTracker.HealthTick))]
+	[HarmonyPatch(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.HealthTick))]
 	static class Pawn_HealthTracker_HealthTick_Patch
 	{
 		static void Postfix(Pawn ___pawn)

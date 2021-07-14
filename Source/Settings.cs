@@ -54,13 +54,13 @@ namespace RiceRiceBaby
 			{
 				romanceLevel = list.Slider(romanceLevel, 0f, 1f);
 
-				list.Label("Cheating: " + (int)(cheatingLevel * 100) + "%");
+				_ = list.Label("Cheating: " + (int)(cheatingLevel * 100) + "%");
 				cheatingLevel = list.Slider(cheatingLevel, 0f, 1f);
 
-				list.Label("Rice: " + (int)(riceLevel * 100) + "%");
+				_ = list.Label("Rice: " + (int)(riceLevel * 100) + "%");
 				riceLevel = list.Slider(riceLevel, 0f, 1f);
 
-				list.Label("Rice Force: " + (int)(riceForce * 100) + "%");
+				_ = list.Label("Rice Force: " + (int)(riceForce * 100) + "%");
 				riceForce = list.Slider(riceForce, 0f, 1f);
 			}
 

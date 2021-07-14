@@ -9,8 +9,9 @@ namespace RiceRiceBaby
 	[StaticConstructorOnStartup]
 	class Defs
 	{
-		public static ThingDef riceMote = ThingDef.Named("Mote_Rice");
-		public static ThingDef wantRiceMote = ThingDef.Named("Mote_WantRice");
+		public static FleckDef riceMote = DefDatabase<FleckDef>.GetNamed("Fleck_Rice");
+		public static FleckDef wantRiceMote = DefDatabase<FleckDef>.GetNamed("Fleck_WantRice");
+
 		public static ThingDef swearMote = ThingDef.Named("Mote_Swear");
 		public static ThingDef amazingMote = ThingDef.Named("Mote_Amazing");
 		public static ThingDef gasMote = ThingDef.Named("Mote_Gas");
@@ -57,16 +58,23 @@ namespace RiceRiceBaby
 
 			{ ThoughtDefOf.SleptOutside, new SwearThought(fthisMote, 0.5f) },
 			{ ThoughtDefOf.SleptOnGround, new SwearThought(fthisMote, 0.25f) },
+			{ ThoughtDefOf.SleptInRoomWithSlave, new SwearThought(fthisMote, 0.25f) },
 			{ ThoughtDefOf.AteWithoutTable, new SwearThought(fthisMote, 0.25f) },
-			{ ThoughtDefOf.ObservedLayingCorpse, new SwearThought(fthisMote, 0.25f) },
+			{ ThoughtDefOf.ObservedTerror, new SwearThought(fthisMote, 1.0f) },
 			{ ThoughtDefOf.HadAngeringFight, new SwearThought(fthisMote, 0.5f) },
 			{ ThoughtDefOf.BrokeUpWithMe, new SwearThought(fthisMote, 0.75f) },
 			{ ThoughtDefOf.RejectedMyProposal, new SwearThought(fthisMote, 0.75f) },
+			{ ThoughtDefOf.SoldMyBondedAnimalMood, new SwearThought(fthisMote, 0.75f) },
+			{ ThoughtDefOf.WasEnslaved, new SwearThought(fthisMote, 0.75f) },
+			{ ThoughtDefOf.TerribleSpeech, new SwearThought(fthisMote, 0.25f) },
 
-			{ ThoughtDefOf.AteAwfulMeal, new SwearThought(wtfMote, 0.5f) },
+			{ ThoughtDefOf.AteRawFood, new SwearThought(wtfMote, 0.5f) },
+			{ ThoughtDefOf.AteRottenFood, new SwearThought(wtfMote, 0.5f) },
+			{ ThoughtDefOf.AteFoodInappropriateForTitle, new SwearThought(wtfMote, 1.0f) },
 			{ ThoughtDefOf.AteHumanlikeMeatDirect, new SwearThought(wtfMote, 1.0f) },
 			{ ThoughtDefOf.AteHumanlikeMeatAsIngredient, new SwearThought(wtfMote, 0.5f) },
 			{ ThoughtDefOf.MyOrganHarvested, new SwearThought(wtfMote, 1.0f) },
+			{ ThoughtDefOf.KnowColonistDied, new SwearThought(wtfMote, 1.0f) },
 			{ ThoughtDefOf.KnowGuestOrganHarvested, new SwearThought(wtfMote, 1.0f) },
 			{ ThoughtDefOf.KnowColonistOrganHarvested, new SwearThought(wtfMote, 1.0f) },
 			{ ThoughtDefOf.KnowGuestExecuted, new SwearThought(wtfMote, 1.0f) },
@@ -74,6 +82,9 @@ namespace RiceRiceBaby
 			{ ThoughtDefOf.IRejectedTheirProposal, new SwearThought(wtfMote, 0.25f) },
 			{ ThoughtDefOf.AttendedWedding, new SwearThought(wtfMote, 0.05f) },
 			{ ThoughtDefOf.KilledMyFriend, new SwearThought(wtfMote, 0.9f) },
+			{ ThoughtDefOf.ObservedGibbetCage, new SwearThought(wtfMote, 0.5f) },
+			{ ThoughtDefOf.ConnectedTreeDied, new SwearThought(wtfMote, 1.0f) },
+
 			{ ThoughtDefOf.ForcedMeToTakeDrugs, new SwearThought(wtfMote, 0.75f) },
 		};
 	}

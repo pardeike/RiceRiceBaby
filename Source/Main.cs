@@ -28,13 +28,4 @@ namespace RiceRiceBaby
 			return "Rice Rice Baby";
 		}
 	}
-
-	[HarmonyPatch(typeof(Game), nameof(Game.FinalizeInit))]
-	static class Game_FinalizeInit_Patch
-	{
-		public static void Postfix()
-		{
-			ModCounter.Trigger();
-		}
-	}
 }

@@ -160,7 +160,6 @@ namespace RiceRiceBaby
 			{
 				var lovin = LoveAnimation.GetLovin(pawn);
 				useCache = lovin == null;
-				Log.Warning($"Setting useCache to {useCache}");
 			}
 			return useCache;
 		}

@@ -14,8 +14,9 @@ namespace RiceRiceBaby
 		{
 			if (RiceRiceBabyMain.Settings.profanity == false || fleckDef != FleckDefOf.SleepZ) return;
 
+			if (map?.thingGrid == null) return;
 			var pawn = map.thingGrid.ThingAt<Pawn>(cell);
-			if (pawn.IsColonist == false) return;
+			if (pawn?.IsColonist ?? false == false) return;
 
 			if (Rand.Chance(0.4f))
 			{
@@ -23,8 +24,8 @@ namespace RiceRiceBaby
 				if (pawn.CanSnore() && Rand.Chance(0.5f))
 				{
 					def = Rand.Chance(0.5f) ? Defs.snoreMaleSound : Defs.snoreFemaleSound;
-					if (pawn != null && pawn.gender == Gender.Male) def = Defs.snoreMaleSound;
-					if (pawn != null && pawn.gender == Gender.Female) def = Defs.snoreFemaleSound;
+					if (pawn.gender == Gender.Male) def = Defs.snoreMaleSound;
+					if (pawn.gender == Gender.Female) def = Defs.snoreFemaleSound;
 				}
 				else
 					Throttled.Every(4.3, pawn, ThrottleType.lastBreath, () => def = Defs.sleepingSound);

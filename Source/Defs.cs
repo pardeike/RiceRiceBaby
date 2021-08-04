@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -118,10 +119,8 @@ namespace RiceRiceBaby
 		public static bool CanSnore(this Pawn pawn)
 		{
 			var traits = pawn.story.traits;
-			foreach (var traitDef in Defs.snoringTraits)
-				if (traits.HasTrait(traitDef))
-					return true;
-			return false;
+			if (traits == null) return false;
+			return Defs.snoringTraits.Any(t => traits.HasTrait(t));
 		}
 	}
 }

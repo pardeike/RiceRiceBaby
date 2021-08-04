@@ -16,12 +16,13 @@ namespace RiceRiceBaby
 
 			if (map?.thingGrid == null) return;
 			var pawn = map.thingGrid.ThingAt<Pawn>(cell);
-			if (pawn?.IsColonist ?? false == false) return;
+			if (pawn == null) return;
+			if (pawn.IsColonist == false) return;
 
 			if (Rand.Chance(0.4f))
 			{
 				SoundDef def = null;
-				if (pawn.CanSnore() && Rand.Chance(0.5f))
+				if (Rand.Chance(0.5f) && pawn.CanSnore())
 				{
 					def = Rand.Chance(0.5f) ? Defs.snoreMaleSound : Defs.snoreFemaleSound;
 					if (pawn.gender == Gender.Male) def = Defs.snoreMaleSound;

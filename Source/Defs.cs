@@ -46,48 +46,55 @@ namespace RiceRiceBaby
 			TraitDefOf.Psychopath,
 		};
 
-		public static readonly Dictionary<ThoughtDef, SwearThought> triggeringDefs = new Dictionary<ThoughtDef, SwearThought>()
+		public static readonly Dictionary<ThoughtDef, SwearThought> triggeringDefs;
+
+		static Defs()
 		{
-			{ ThoughtDefOf.Insulted, new SwearThought(fuMote, 1.0f) },
-			{ ThoughtDefOf.SleepDisturbed, new SwearThought(fuMote, 1.0f) },
-			{ ThoughtDefOf.KnowColonistExecuted, new SwearThought(fuMote, 1.0f) },
-			{ ThoughtDefOf.CheatedOnMe, new SwearThought(fuMote, 0.5f) },
-			{ ThoughtDefOf.RebuffedMyRomanceAttempt, new SwearThought(fuMote, 0.5f) },
-			{ ThoughtDefOf.FailedRomanceAttemptOnMe, new SwearThought(fuMote, 0.25f) },
-			{ ThoughtDefOf.DivorcedMe, new SwearThought(fuMote, 1.0f) },
-			{ ThoughtDefOf.ForcedMeToTakeLuciferium, new SwearThought(fuMote, 1.0f) },
+			triggeringDefs = new Dictionary<ThoughtDef, SwearThought>();
+			static void saveAdd(ThoughtDef def, SwearThought thought) { if (def != null && thought.icon != null) triggeringDefs[def] = thought; }
 
-			{ ThoughtDefOf.SleptOutside, new SwearThought(fthisMote, 0.5f) },
-			{ ThoughtDefOf.SleptOnGround, new SwearThought(fthisMote, 0.25f) },
-			{ ThoughtDefOf.SleptInRoomWithSlave, new SwearThought(fthisMote, 0.25f) },
-			{ ThoughtDefOf.AteWithoutTable, new SwearThought(fthisMote, 0.25f) },
-			{ ThoughtDefOf.ObservedTerror, new SwearThought(fthisMote, 1.0f) },
-			{ ThoughtDefOf.HadAngeringFight, new SwearThought(fthisMote, 0.5f) },
-			{ ThoughtDefOf.BrokeUpWithMe, new SwearThought(fthisMote, 0.75f) },
-			{ ThoughtDefOf.RejectedMyProposal, new SwearThought(fthisMote, 0.75f) },
-			{ ThoughtDefOf.SoldMyBondedAnimalMood, new SwearThought(fthisMote, 0.75f) },
-			{ ThoughtDefOf.WasEnslaved, new SwearThought(fthisMote, 0.75f) },
-			{ ThoughtDefOf.TerribleSpeech, new SwearThought(fthisMote, 0.25f) },
+			saveAdd(ThoughtDefOf.Insulted, new SwearThought(fuMote, 1.0f));
 
-			{ ThoughtDefOf.AteRawFood, new SwearThought(wtfMote, 0.5f) },
-			{ ThoughtDefOf.AteRottenFood, new SwearThought(wtfMote, 0.5f) },
-			{ ThoughtDefOf.AteFoodInappropriateForTitle, new SwearThought(wtfMote, 1.0f) },
-			{ ThoughtDefOf.AteHumanlikeMeatDirect, new SwearThought(wtfMote, 1.0f) },
-			{ ThoughtDefOf.AteHumanlikeMeatAsIngredient, new SwearThought(wtfMote, 0.5f) },
-			{ ThoughtDefOf.MyOrganHarvested, new SwearThought(wtfMote, 1.0f) },
-			{ ThoughtDefOf.KnowColonistDied, new SwearThought(wtfMote, 1.0f) },
-			{ ThoughtDefOf.KnowGuestOrganHarvested, new SwearThought(wtfMote, 1.0f) },
-			{ ThoughtDefOf.KnowColonistOrganHarvested, new SwearThought(wtfMote, 1.0f) },
-			{ ThoughtDefOf.KnowGuestExecuted, new SwearThought(wtfMote, 1.0f) },
-			{ ThoughtDefOf.BotchedMySurgery, new SwearThought(wtfMote, 0.25f) },
-			{ ThoughtDefOf.IRejectedTheirProposal, new SwearThought(wtfMote, 0.25f) },
-			{ ThoughtDefOf.AttendedWedding, new SwearThought(wtfMote, 0.05f) },
-			{ ThoughtDefOf.KilledMyFriend, new SwearThought(wtfMote, 0.9f) },
-			{ ThoughtDefOf.ObservedGibbetCage, new SwearThought(wtfMote, 0.5f) },
-			{ ThoughtDefOf.ConnectedTreeDied, new SwearThought(wtfMote, 1.0f) },
+			saveAdd(ThoughtDefOf.Insulted, new SwearThought(fuMote, 1.0f));
+			saveAdd(ThoughtDefOf.SleepDisturbed, new SwearThought(fuMote, 1.0f));
+			saveAdd(ThoughtDefOf.KnowColonistExecuted, new SwearThought(fuMote, 1.0f));
+			saveAdd(ThoughtDefOf.CheatedOnMe, new SwearThought(fuMote, 0.5f));
+			saveAdd(ThoughtDefOf.RebuffedMyRomanceAttempt, new SwearThought(fuMote, 0.5f));
+			saveAdd(ThoughtDefOf.FailedRomanceAttemptOnMe, new SwearThought(fuMote, 0.25f));
+			saveAdd(ThoughtDefOf.DivorcedMe, new SwearThought(fuMote, 1.0f));
+			saveAdd(ThoughtDefOf.ForcedMeToTakeLuciferium, new SwearThought(fuMote, 1.0f));
 
-			{ ThoughtDefOf.ForcedMeToTakeDrugs, new SwearThought(wtfMote, 0.75f) },
-		};
+			saveAdd(ThoughtDefOf.SleptOutside, new SwearThought(fthisMote, 0.5f));
+			saveAdd(ThoughtDefOf.SleptOnGround, new SwearThought(fthisMote, 0.25f));
+			saveAdd(ThoughtDefOf.SleptInRoomWithSlave, new SwearThought(fthisMote, 0.25f));
+			saveAdd(ThoughtDefOf.AteWithoutTable, new SwearThought(fthisMote, 0.25f));
+			saveAdd(ThoughtDefOf.ObservedTerror, new SwearThought(fthisMote, 1.0f));
+			saveAdd(ThoughtDefOf.HadAngeringFight, new SwearThought(fthisMote, 0.5f));
+			saveAdd(ThoughtDefOf.BrokeUpWithMe, new SwearThought(fthisMote, 0.75f));
+			saveAdd(ThoughtDefOf.RejectedMyProposal, new SwearThought(fthisMote, 0.75f));
+			saveAdd(ThoughtDefOf.SoldMyBondedAnimalMood, new SwearThought(fthisMote, 0.75f));
+			saveAdd(ThoughtDefOf.WasEnslaved, new SwearThought(fthisMote, 0.75f));
+			saveAdd(ThoughtDefOf.TerribleSpeech, new SwearThought(fthisMote, 0.25f));
+
+			saveAdd(ThoughtDefOf.AteRawFood, new SwearThought(wtfMote, 0.5f));
+			saveAdd(ThoughtDefOf.AteRottenFood, new SwearThought(wtfMote, 0.5f));
+			saveAdd(ThoughtDefOf.AteFoodInappropriateForTitle, new SwearThought(wtfMote, 1.0f));
+			saveAdd(ThoughtDefOf.AteHumanlikeMeatDirect, new SwearThought(wtfMote, 1.0f));
+			saveAdd(ThoughtDefOf.AteHumanlikeMeatAsIngredient, new SwearThought(wtfMote, 0.5f));
+			saveAdd(ThoughtDefOf.MyOrganHarvested, new SwearThought(wtfMote, 1.0f));
+			saveAdd(ThoughtDefOf.KnowColonistDied, new SwearThought(wtfMote, 1.0f));
+			saveAdd(ThoughtDefOf.KnowGuestOrganHarvested, new SwearThought(wtfMote, 1.0f));
+			saveAdd(ThoughtDefOf.KnowColonistOrganHarvested, new SwearThought(wtfMote, 1.0f));
+			saveAdd(ThoughtDefOf.KnowGuestExecuted, new SwearThought(wtfMote, 1.0f));
+			saveAdd(ThoughtDefOf.BotchedMySurgery, new SwearThought(wtfMote, 0.25f));
+			saveAdd(ThoughtDefOf.IRejectedTheirProposal, new SwearThought(wtfMote, 0.25f));
+			saveAdd(ThoughtDefOf.AttendedWedding, new SwearThought(wtfMote, 0.05f));
+			saveAdd(ThoughtDefOf.KilledMyFriend, new SwearThought(wtfMote, 0.9f));
+			saveAdd(ThoughtDefOf.ObservedGibbetCage, new SwearThought(wtfMote, 0.5f));
+			saveAdd(ThoughtDefOf.ConnectedTreeDied, new SwearThought(wtfMote, 1.0f));
+
+			saveAdd(ThoughtDefOf.ForcedMeToTakeDrugs, new SwearThought(wtfMote, 0.75f));
+		}
 	}
 
 	class SwearThought

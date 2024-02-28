@@ -1,0 +1,11 @@
+﻿<Project>
+
+	<PropertyGroup>
+		<ModName>RiceRiceBaby</ModName>
+		<ModFileName>RiceRiceBaby</ModFileName>
+		<Repository>https://github.com/pardeike/RiceRiceBaby</Repository>
+		<ModVersion>2.3.1.0</ModVersion>
+		<ProjectGuid>{A78EBCAF-E80B-4554-9C5A-4EBF4C299E31}</ProjectGuid>
+	</PropertyGroup>
+
+</Project>

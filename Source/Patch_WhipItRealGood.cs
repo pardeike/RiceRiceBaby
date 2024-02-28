@@ -50,7 +50,8 @@ namespace RiceRiceBaby
 
 		static void Postfix()
 		{
-			if (started == 0) return;
+			if (started == 0)
+				return;
 
 			var delta = Time.realtimeSinceStartup - started;
 			var i = (int)(Mathf.Min(1, delta / movieTime) * frames.Length);

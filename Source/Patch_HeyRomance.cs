@@ -13,7 +13,8 @@ namespace RiceRiceBaby
 	{
 		static void Prefix()
 		{
-			if (RiceRiceBabyMain.Settings.romancing == false) return;
+			if (RiceRiceBabyMain.Settings.romancing == false)
+				return;
 			Tools.ManipulateDefs();
 		}
 	}
@@ -23,7 +24,8 @@ namespace RiceRiceBaby
 	{
 		static void Postfix(Pawn pawn, Pawn partner, ref float __result)
 		{
-			if (RiceRiceBabyMain.Settings.romancing == false) return;
+			if (RiceRiceBabyMain.Settings.romancing == false)
+				return;
 
 			if (pawn.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness) < 0.5f)
 				return;
@@ -48,7 +50,8 @@ namespace RiceRiceBaby
 	{
 		static void Postfix(ref int __result)
 		{
-			if (RiceRiceBabyMain.Settings.romancing == false) return;
+			if (RiceRiceBabyMain.Settings.romancing == false)
+				return;
 			__result = (int)GenMath.LerpDoubleClamped(0f, 1f, 5000, 60, RiceRiceBabyMain.Settings.riceLevel);
 		}
 	}
@@ -140,9 +143,12 @@ namespace RiceRiceBaby
 		[HarmonyPostfix]
 		static void Postfix(Pawn initiator, Pawn recipient, ref float __result)
 		{
-			if (RiceRiceBabyMain.Settings.romancing == false) return;
-			if (initiator.IsColonist == false) return;
-			if (recipient.IsColonist == false) return;
+			if (RiceRiceBabyMain.Settings.romancing == false)
+				return;
+			if (initiator.IsColonist == false)
+				return;
+			if (recipient.IsColonist == false)
+				return;
 
 			if (RiceRiceBabyMain.Settings.homosexuality == false && initiator.gender == recipient.gender)
 				return;

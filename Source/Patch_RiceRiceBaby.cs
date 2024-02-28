@@ -19,8 +19,10 @@ namespace RiceRiceBaby
 			var map = pawn.Map;
 
 			var soundDef = Rand.Chance(0.5f) ? Defs.mmmSound : Defs.achSound;
-			if (pawn.gender == Gender.Male) soundDef = Defs.mmmSound;
-			if (pawn.gender == Gender.Female) soundDef = Defs.achSound;
+			if (pawn.gender == Gender.Male)
+				soundDef = Defs.mmmSound;
+			if (pawn.gender == Gender.Female)
+				soundDef = Defs.achSound;
 
 			var playDefaultSound = true;
 
@@ -97,7 +99,8 @@ namespace RiceRiceBaby
 			if (RiceRiceBabyMain.Settings.lovin && fleckDef == FleckDefOf.Heart)
 			{
 				var pawn = map.thingGrid.ThingAt<Pawn>(cell);
-				if (pawn == null || pawn.IsColonist == false) return true;
+				if (pawn == null || pawn.IsColonist == false)
+					return true;
 
 				if (pawn.CurJobDef == JobDefOf.Lovin)
 					if (Lovin(pawn) == false)
@@ -116,19 +119,24 @@ namespace RiceRiceBaby
 	{
 		public static Lovin GetLovin(Pawn pawn)
 		{
-			if (RiceRiceBabyMain.Settings.lovin == false) return null;
-			if (pawn.CurJobDef != JobDefOf.Lovin) return null;
+			if (RiceRiceBabyMain.Settings.lovin == false)
+				return null;
+			if (pawn.CurJobDef != JobDefOf.Lovin)
+				return null;
 
 			var bed = pawn.CurrentBed();
-			if (bed == null) return null;
+			if (bed == null)
+				return null;
 			var baseRotation = bed.Rotation;
 
 			var idx = bed.GetCurOccupantSlotIndex(pawn);
-			if (idx < 0 || idx > 1) return null;
+			if (idx < 0 || idx > 1)
+				return null;
 
 			var partner = bed.GetCurOccupant(1 - idx);
 
-			if (!(pawn.jobs.curDriver is JobDriver_Lovin driver1) || !(partner.jobs.curDriver is JobDriver_Lovin driver2)) return null;
+			if (!(pawn.jobs.curDriver is JobDriver_Lovin driver1) || !(partner.jobs.curDriver is JobDriver_Lovin driver2))
+				return null;
 			var ticksLeft = Math.Min(driver1.ticksLeft, driver2.ticksLeft);
 
 			var lovin = Lovin.LovinFor(pawn, partner, baseRotation.AsInt < 2);
@@ -188,11 +196,16 @@ namespace RiceRiceBaby
 			var ldloc = new CodeInstruction(OpCodes.Nop);
 			var stloc = list[idx - 1].opcode;
 			var stloc_nr = list[idx - 1].operand;
-			if (stloc == OpCodes.Stloc_0) ldloc = new CodeInstruction(OpCodes.Ldloc_0);
-			if (stloc == OpCodes.Stloc_1) ldloc = new CodeInstruction(OpCodes.Ldloc_1);
-			if (stloc == OpCodes.Stloc_2) ldloc = new CodeInstruction(OpCodes.Ldloc_2);
-			if (stloc == OpCodes.Stloc_3) ldloc = new CodeInstruction(OpCodes.Ldloc_3);
-			if (stloc == OpCodes.Stloc) ldloc = new CodeInstruction(OpCodes.Ldloc, stloc_nr);
+			if (stloc == OpCodes.Stloc_0)
+				ldloc = new CodeInstruction(OpCodes.Ldloc_0);
+			if (stloc == OpCodes.Stloc_1)
+				ldloc = new CodeInstruction(OpCodes.Ldloc_1);
+			if (stloc == OpCodes.Stloc_2)
+				ldloc = new CodeInstruction(OpCodes.Ldloc_2);
+			if (stloc == OpCodes.Stloc_3)
+				ldloc = new CodeInstruction(OpCodes.Ldloc_3);
+			if (stloc == OpCodes.Stloc)
+				ldloc = new CodeInstruction(OpCodes.Ldloc, stloc_nr);
 			if (ldloc.opcode == OpCodes.Nop)
 			{
 				Log.Error("Wrong local variable in PawnRenderer.RenderPawnAt");
@@ -222,7 +235,8 @@ namespace RiceRiceBaby
 		public static void LovinFix(Pawn pawn, ref Vector3 rootLoc, ref float angle, ref Rot4 bodyFacing)
 		{
 			var lovin = LoveAnimation.GetLovin(pawn);
-			if (lovin == null) return;
+			if (lovin == null)
+				return;
 
 			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
 			var ticks = Tools.Ticker();
@@ -231,7 +245,8 @@ namespace RiceRiceBaby
 			if (lovin.onTop)
 			{
 				var shortHump = idx == 0 ? -0.45f : 0.45f;
-				if (lovin.flipped) shortHump *= -1;
+				if (lovin.flipped)
+					shortHump *= -1;
 				if (setRootLoc)
 				{
 					rootLoc += lovin.longSide * lovin.longHump + lovin.shortSide * shortHump;
@@ -243,7 +258,8 @@ namespace RiceRiceBaby
 			else
 			{
 				var shortHump = idx == 0 ? -0.2f - lovin.sway : 0.2f + lovin.sway;
-				if (lovin.flipped) shortHump *= -1;
+				if (lovin.flipped)
+					shortHump *= -1;
 				if (setRootLoc)
 					rootLoc += lovin.longSide * lovin.longHump + lovin.shortSide * shortHump;
 				angle += (float)Math.Sin(ticks * 50f) * 2f;
@@ -252,7 +268,9 @@ namespace RiceRiceBaby
 
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			var dummy1 = Vector3.zero; var dummy2 = 0f; var dummy3 = Rot4.Invalid;
+			var dummy1 = Vector3.zero;
+			var dummy2 = 0f;
+			var dummy3 = Rot4.Invalid;
 			yield return new CodeInstruction(OpCodes.Ldarg_0);
 			yield return new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PawnRenderer), nameof(PawnRenderer.pawn)));
 			yield return new CodeInstruction(OpCodes.Ldarga_S, 1);
@@ -281,7 +299,8 @@ namespace RiceRiceBaby
 		{
 			var pawn = renderer.graphics.pawn;
 			var lovin = LoveAnimation.GetLovin(pawn);
-			if (lovin == null) return;
+			if (lovin == null)
+				return;
 			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
 			headFacing = lovin.face[idx];
 		}
@@ -305,7 +324,8 @@ namespace RiceRiceBaby
 		static void Postfix(ref Vector3 rootLoc, Pawn pawn)
 		{
 			var lovin = LoveAnimation.GetLovin(pawn);
-			if (lovin == null) return;
+			if (lovin == null)
+				return;
 
 			var idx = pawn.CurrentBed().GetCurOccupantSlotIndex(pawn);
 
@@ -374,8 +394,10 @@ namespace RiceRiceBaby
 				if ("RomanceAttempt".Contains(intDef.defName))
 				{
 					var soundDef = Rand.Chance(0.5f) ? Defs.mmmSound : Defs.achSound;
-					if (___pawn.gender == Gender.Male) soundDef = Defs.mmmSound;
-					if (___pawn.gender == Gender.Female) soundDef = Defs.achSound;
+					if (___pawn.gender == Gender.Male)
+						soundDef = Defs.mmmSound;
+					if (___pawn.gender == Gender.Female)
+						soundDef = Defs.achSound;
 					soundDef.PlaySound(___pawn.Position, ___pawn.Map);
 				}
 		}

@@ -12,12 +12,16 @@ namespace RiceRiceBaby
 	{
 		static void Postfix(IntVec3 cell, Map map, FleckDef fleckDef)
 		{
-			if (RiceRiceBabyMain.Settings.profanity == false || fleckDef != FleckDefOf.SleepZ) return;
+			if (RiceRiceBabyMain.Settings.profanity == false || fleckDef != FleckDefOf.SleepZ)
+				return;
 
-			if (map?.thingGrid == null) return;
+			if (map?.thingGrid == null)
+				return;
 			var pawn = map.thingGrid.ThingAt<Pawn>(cell);
-			if (pawn == null) return;
-			if (pawn.IsColonist == false) return;
+			if (pawn == null)
+				return;
+			if (pawn.IsColonist == false)
+				return;
 
 			if (Rand.Chance(0.4f))
 			{
@@ -25,8 +29,10 @@ namespace RiceRiceBaby
 				if (Rand.Chance(0.5f) && pawn.CanSnore())
 				{
 					def = Rand.Chance(0.5f) ? Defs.snoreMaleSound : Defs.snoreFemaleSound;
-					if (pawn.gender == Gender.Male) def = Defs.snoreMaleSound;
-					if (pawn.gender == Gender.Female) def = Defs.snoreFemaleSound;
+					if (pawn.gender == Gender.Male)
+						def = Defs.snoreMaleSound;
+					if (pawn.gender == Gender.Female)
+						def = Defs.snoreFemaleSound;
 				}
 				else
 					Throttled.Every(4.3, pawn, ThrottleType.lastBreath, () => def = Defs.sleepingSound);
@@ -51,7 +57,8 @@ namespace RiceRiceBaby
 
 		static void Postfix(Pawn chewer, float durationMultiplier, TargetIndex ingestibleInd, Toil __result)
 		{
-			if (RiceRiceBabyMain.Settings.profanity == false) return;
+			if (RiceRiceBabyMain.Settings.profanity == false)
+				return;
 
 			var toil = __result;
 			if (toil == null || chewer == null)

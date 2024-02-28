@@ -8,7 +8,8 @@ namespace RiceRiceBaby
 	{
 		static void Postfix(Pawn ___pawn)
 		{
-			if (RiceRiceBabyMain.Settings.death == false) return;
+			if (RiceRiceBabyMain.Settings.death == false)
+				return;
 
 			if (___pawn.Dead || ___pawn.IsColonist == false)
 				return;

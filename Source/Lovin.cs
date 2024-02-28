@@ -80,8 +80,10 @@ namespace RiceRiceBaby
 				{
 					face[0] = directions[Rand.Range(0, 3)];
 					face[1] = directions[Rand.Range(0, 3)];
-					if (flipped == false && (face[0] == Rot4.East || face[1] == Rot4.West)) break;
-					if (flipped == true && (face[0] == Rot4.West || face[1] == Rot4.East)) break;
+					if (flipped == false && (face[0] == Rot4.East || face[1] == Rot4.West))
+						break;
+					if (flipped == true && (face[0] == Rot4.West || face[1] == Rot4.East))
+						break;
 				}
 			}
 		}

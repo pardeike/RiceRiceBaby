@@ -10,6 +10,7 @@ namespace RiceRiceBaby
 		public bool profanity = true;
 		public bool swearing = true;
 		public bool death = true;
+		public bool homosexuality = true;
 		public bool romancing = true;
 		public float romanceLevel = 0.4f;
 		public float cheatingLevel = 0.2f;
@@ -24,15 +25,12 @@ namespace RiceRiceBaby
 			Scribe_Values.Look(ref profanity, "profanity", true);
 			Scribe_Values.Look(ref swearing, "swearing", true);
 			Scribe_Values.Look(ref death, "death", true);
+			Scribe_Values.Look(ref homosexuality, "homosexuality", true);
 			Scribe_Values.Look(ref romancing, "romancing", true);
 			Scribe_Values.Look(ref romanceLevel, "romanceLevel", 0.4f);
 			Scribe_Values.Look(ref cheatingLevel, "cheatingLevel", 0.2f);
 			Scribe_Values.Look(ref riceLevel, "riceLevel", 0.4f);
 			Scribe_Values.Look(ref riceForce, "riceForce", 0.75f);
-
-			if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs)
-			{
-			}
 		}
 
 		public void DoWindowContents(Rect inRect)
@@ -48,6 +46,8 @@ namespace RiceRiceBaby
 			list.CheckboxLabeled("Swearing", ref swearing);
 			list.CheckboxLabeled("Death", ref death);
 
+			list.Gap(20);
+
 			var str = romancing ? (int)(romanceLevel * 100) + "%" : "-";
 			list.CheckboxLabeled("Romance: " + str, ref romancing);
 			if (romancing)
@@ -62,6 +62,7 @@ namespace RiceRiceBaby
 
 				_ = list.Label("Rice Force: " + (int)(riceForce * 100) + "%");
 				riceForce = list.Slider(riceForce, 0f, 1f);
+				list.CheckboxLabeled("Homosexuality", ref homosexuality);
 			}
 
 			list.End();

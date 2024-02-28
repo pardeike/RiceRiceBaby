@@ -35,6 +35,9 @@ namespace RiceRiceBaby
 			if (partner.health.hediffSet.PainTotal > 0.5f)
 				return;
 
+			if (RiceRiceBabyMain.Settings.homosexuality == false && pawn.gender == partner.gender)
+				return;
+
 			if (Rand.Chance(RiceRiceBabyMain.Settings.riceLevel))
 				__result = 0.1f;
 		}
@@ -61,6 +64,9 @@ namespace RiceRiceBaby
 			result = null;
 
 			if (RiceRiceBabyMain.Settings.romancing == false)
+				return false;
+
+			if (RiceRiceBabyMain.Settings.homosexuality == false && initiator.gender == recipient.gender)
 				return false;
 
 			if (defs.Any(def => def == InteractionDefOf.RomanceAttempt) == false)
@@ -137,6 +143,9 @@ namespace RiceRiceBaby
 			if (RiceRiceBabyMain.Settings.romancing == false) return;
 			if (initiator.IsColonist == false) return;
 			if (recipient.IsColonist == false) return;
+
+			if (RiceRiceBabyMain.Settings.homosexuality == false && initiator.gender == recipient.gender)
+				return;
 
 			var p1 = initiator.relations != null && LovePartnerRelationUtility.HasAnyLovePartner(initiator);
 			var p2 = recipient.relations != null && LovePartnerRelationUtility.HasAnyLovePartner(recipient);

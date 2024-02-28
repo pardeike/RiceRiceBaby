@@ -45,7 +45,7 @@ namespace RiceRiceBaby
 			list.CheckboxLabeled("Profanity", ref profanity);
 			list.CheckboxLabeled("Swearing", ref swearing);
 			list.CheckboxLabeled("Death", ref death);
-
+			list.CheckboxLabeled("Homosexuality", ref homosexuality);
 			list.Gap(20);
 
 			var str = romancing ? (int)(romanceLevel * 100) + "%" : "-";
@@ -62,7 +62,6 @@ namespace RiceRiceBaby
 
 				_ = list.Label("Rice Force: " + (int)(riceForce * 100) + "%");
 				riceForce = list.Slider(riceForce, 0f, 1f);
-				list.CheckboxLabeled("Homosexuality", ref homosexuality);
 			}
 
 			list.End();
